@@ -1,0 +1,17 @@
+fileFormatVersion: 2
+guid: 3997e2241185407d80309a82f9148466
+ShaderImporter:
+  externalObjects: {}
+  defaultTextures: []
+  nonModifiableTextures: []
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 268120
+  packageName: Abandoned Factory (Factory, Warehouse, Industrial Factory, Industrial
+    Warehouse)
+  packageVersion: 1.0
+  assetPath: Assets/Hivemind/TextMesh Pro/Shaders/TMPro_Properties.cginc
+  uploadId: 633357
