@@ -129,15 +129,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: 9b8de0bcae350464a8e749e0dec6a08f, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 4.0799727
+      value: 0.047
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 9b8de0bcae350464a8e749e0dec6a08f, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -26.642393
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 9b8de0bcae350464a8e749e0dec6a08f, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -8.219852
+      value: 0.135
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 9b8de0bcae350464a8e749e0dec6a08f, type: 3}
       propertyPath: m_LocalRotation.w
@@ -263,7 +263,7 @@ Transform:
   m_GameObject: {fileID: 330585543}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: -10}
+  m_LocalPosition: {x: 0, y: 1, z: -6.52}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -499,31 +499,31 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: 6984fc577ad1ee34a815cfba822155e2, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 3.941
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 6984fc577ad1ee34a815cfba822155e2, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: -26.682
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 6984fc577ad1ee34a815cfba822155e2, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: -8.066
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 6984fc577ad1ee34a815cfba822155e2, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 0.7071068
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 6984fc577ad1ee34a815cfba822155e2, type: 3}
-      propertyPath: m_LocalRotation.x
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 6984fc577ad1ee34a815cfba822155e2, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6984fc577ad1ee34a815cfba822155e2, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6984fc577ad1ee34a815cfba822155e2, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.6532817
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6984fc577ad1ee34a815cfba822155e2, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0.2705976
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6984fc577ad1ee34a815cfba822155e2, type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0
+      value: -0.2705976
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 6984fc577ad1ee34a815cfba822155e2, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.7071068
+      value: -0.6532817
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 6984fc577ad1ee34a815cfba822155e2, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -531,11 +531,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 6984fc577ad1ee34a815cfba822155e2, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
+      value: -45
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 6984fc577ad1ee34a815cfba822155e2, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
+      value: -90
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 6984fc577ad1ee34a815cfba822155e2, type: 3}
       propertyPath: m_Name
