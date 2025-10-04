@@ -17,9 +17,12 @@ public class PowerUpShop : MonoBehaviour
     private Transform _highlight;
     private Transform _selection;
     private RaycastHit _raycastHit;
+    private bool _hasSelected;
+    private MoneyManagement _moneyManagement;
     
     private void Awake()
     {
+        _moneyManagement = GetComponent<MoneyManagement>();
         if (powerUpPrefabs == null || powerUpPrefabs.Count() < powerUpCount)
             Debug.Log("Not enough power up prefabs added!");
     }
@@ -49,6 +52,8 @@ public class PowerUpShop : MonoBehaviour
 
     private void HighlightPowerUp()
     {
+        if (_hasSelected) return;
+        
         if (_highlight)
         {
             _highlight.gameObject.GetComponent<Outline>().enabled = false;
@@ -79,26 +84,20 @@ public class PowerUpShop : MonoBehaviour
 
     private void SelectPowerUp()
     {
-        if (Mouse.current.leftButton.wasPressedThisFrame)
+        if (!_hasSelected && Mouse.current.leftButton.wasPressedThisFrame)
         {
             if (_highlight)
             {
-                if (_selection)
-                    _selection.gameObject.GetComponent<Outline>().enabled = false;
-
                 _selection = _raycastHit.transform;
                 _selection.gameObject.GetComponent<Outline>().enabled = true;
                 _highlight = null;
-                
-            }
-            else
-            {
-                if (_selection)
-                {
-                    _selection.GetComponent<Outline>().enabled = false;
-                    _selection = null;
-                }
+                _hasSelected = true;
+
+                var selectionInfo = _selection.gameObject.GetComponent<PowerUpInfo>();
+                selectionInfo.isSelected = true;
+                _moneyManagement.LoseAmount(selectionInfo.price);
             }
         }
     }
+    
 }

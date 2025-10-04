@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 819864900523795930}
   - component: {fileID: 6045192616031097365}
   - component: {fileID: 4846264111905454287}
+  - component: {fileID: 2950186372376273786}
   m_Layer: 0
   m_Name: Knife
   m_TagString: Selectable
@@ -113,3 +114,17 @@ CapsuleCollider:
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0.000000059604645, y: 0, z: -0.00000008940697}
+--- !u!114 &2950186372376273786
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 350394636145776360}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8b4b69a41c3e6634587c1021a34ba729, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PowerUpInfo
+  isSelected: 0
+  price: 30

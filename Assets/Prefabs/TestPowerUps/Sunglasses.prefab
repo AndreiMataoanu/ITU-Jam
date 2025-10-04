@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 8071359671777246714}
   - component: {fileID: 4066238197814150927}
   - component: {fileID: 3596805089847467270}
+  - component: {fileID: 3833737561462160256}
   m_Layer: 0
   m_Name: Sunglasses
   m_TagString: Selectable
@@ -111,3 +112,17 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &3833737561462160256
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 981487110158306035}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8b4b69a41c3e6634587c1021a34ba729, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PowerUpInfo
+  isSelected: 0
+  price: 60
