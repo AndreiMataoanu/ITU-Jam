@@ -20,8 +20,8 @@ public class CameraController : MonoBehaviour
     private Vector3 targetPos;
     private Quaternion targetRot;
     private bool isMoving = false;
-    private const float moveThreshold = 0.1f;
-    private const float rotThreshold = 0.5f;
+    private const float moveThreshold = 0.05f;
+    private const float rotThreshold = 0.25f;
 
     private void Start()
     {
@@ -45,39 +45,19 @@ public class CameraController : MonoBehaviour
 
         if (!lookingAtItemBox && !lookingAtShop && Input.GetKeyDown(KeyCode.D))
         {
-            lookingAtItemBox = true;
-            targetPos = itemBoxPos;
-            targetRot = Quaternion.Euler(itemBoxRot);
-            sensitivity = 30f;
-            CursorLock(false);
-            isMoving = true;
+            EnterItemBox();
         }
         else if (lookingAtItemBox && Input.GetKeyDown(KeyCode.A))
         {
-            lookingAtItemBox = false;
-            targetPos = defaultPos;
-            targetRot = Quaternion.Euler(defaultRot);
-            sensitivity = defaultSensitivity;
-            CursorLock(true);
-            isMoving = true;
+            EnterDefault();
         }
         else if (!lookingAtShop && !lookingAtItemBox && Input.GetKeyDown(KeyCode.A))
         {
-            lookingAtShop = true;
-            targetPos = shopPos;
-            targetRot = Quaternion.Euler(shopRot);
-            sensitivity = 30f;
-            CursorLock(false);
-            isMoving = true;
+            EnterShop();
         }
         else if (lookingAtShop && Input.GetKeyDown(KeyCode.D))
         {
-            lookingAtShop = false;
-            targetPos = defaultPos;
-            targetRot = Quaternion.Euler(defaultRot);
-            sensitivity = defaultSensitivity;
-            CursorLock(true);
-            isMoving = true;
+            EnterDefault();
         }
 
         if (isMoving)
@@ -94,6 +74,37 @@ public class CameraController : MonoBehaviour
                 isMoving = false;
             }
         }
+    }
+
+    public void EnterItemBox()
+    {
+        lookingAtItemBox = true;
+        targetPos = itemBoxPos;
+        targetRot = Quaternion.Euler(itemBoxRot);
+        sensitivity = 30f;
+        CursorLock(false);
+        isMoving = true;
+    }
+    
+    public void EnterShop()
+    {
+        lookingAtShop = true;
+        targetPos = shopPos;
+        targetRot = Quaternion.Euler(shopRot);
+        sensitivity = 30f;
+        CursorLock(false);
+        isMoving = true;
+    }
+
+    public void EnterDefault()
+    {
+        lookingAtItemBox = false;
+        lookingAtShop = false;
+        targetPos = defaultPos;
+        targetRot = Quaternion.Euler(defaultRot);
+        sensitivity = defaultSensitivity;
+        CursorLock(true);
+        isMoving = true;
     }
 
     private void CursorLock(bool locked)
