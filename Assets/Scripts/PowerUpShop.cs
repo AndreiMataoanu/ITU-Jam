@@ -14,16 +14,20 @@ public class PowerUpShop : MonoBehaviour
     [Header("Power Up Selection")]
     [SerializeField] private Color outlineColor = new Color(0.4f, 0.0f, 0.7f);
     [SerializeField] private float outlineWidth = 5.0f;
+    [SerializeField] private float disappearTime = 1.0f;
 
     private Transform _highlight;
     private Transform _selection;
     private RaycastHit _raycastHit;
     private bool _hasSelected;
     private MoneyManagement _moneyManagement;
+    private InventoryManagement _inventoryManagement;
     
     private void Awake()
     {
         _moneyManagement = GetComponent<MoneyManagement>();
+        _inventoryManagement = GetComponent<InventoryManagement>();
+        
         if (powerUpPrefabs == null || powerUpPrefabs.Count() < powerUpCount)
             Debug.Log("Not enough power up prefabs added!");
     }
@@ -53,9 +57,11 @@ public class PowerUpShop : MonoBehaviour
 
     private void DestroyPowerUps()
     {
-        for (int i = 0; i < powerUpCount; i++)
+        for (int i = 0; i < powerUpCount - 1; i++)
         {
-            Destroy(gameObject.transform.GetChild(i).gameObject);
+            GameObject powerUp = gameObject.transform.GetChild(i).gameObject;
+            if (!powerUp.GetComponent<PowerUpInfo>().isSelected)
+                Destroy(powerUp);
         }
     }
 
@@ -102,9 +108,8 @@ public class PowerUpShop : MonoBehaviour
                 _highlight = null;
                 _hasSelected = true;
 
-                var selectionInfo = _selection.gameObject.GetComponent<PowerUpInfo>();
-                selectionInfo.isSelected = true;
-                _moneyManagement.LoseAmount(selectionInfo.price);
+                BuySelectedPowerUp();
+                // TODO: After buying, change camera direction
 
                 StartCoroutine(DestroyPowerUpsCoroutine());
             }
@@ -113,7 +118,16 @@ public class PowerUpShop : MonoBehaviour
 
     IEnumerator DestroyPowerUpsCoroutine()
     {
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(disappearTime);
         DestroyPowerUps();
+    }
+
+    private void BuySelectedPowerUp()
+    {
+        var selectionInfo = _selection.gameObject.GetComponent<PowerUpInfo>();
+        selectionInfo.isSelected = true;
+                
+        if (_inventoryManagement.AddItem(_selection.gameObject))
+            _moneyManagement.LoseAmount(selectionInfo.price);
     }
 }
