@@ -63,7 +63,6 @@ public class BlackjackGame : MonoBehaviour
 
         public void Shuffle()
         {
-            //Shuffle
             int n = cards.Count;
 
             while(n > 1)
@@ -86,8 +85,6 @@ public class BlackjackGame : MonoBehaviour
                 InitializeDeck();
 
                 Shuffle();
-
-                Debug.Log("Deck was empty, re-shuffling new deck.");
             }
 
             Card dealtCard = cards[0];
@@ -95,6 +92,33 @@ public class BlackjackGame : MonoBehaviour
             cards.RemoveAt(0);
 
             return dealtCard;
+        }
+
+        //Prayer Beads ability: Try to deal a specific card rank if available
+        public Card? DealSpecificCard(Card.Rank rank)
+        {
+            Card? dealtCard = null;
+            int cardIndex = -1;
+
+            for(int i = 0; i < cards.Count; i++)
+            {
+                if(cards[i].rank == rank)
+                {
+                    dealtCard = cards[i];
+                    cardIndex = i;
+
+                    break;
+                }
+            }
+
+            if(cardIndex != -1)
+            {
+                cards.RemoveAt(cardIndex);
+
+                return dealtCard;
+            }
+
+            return null;
         }
     }
 
@@ -121,20 +145,12 @@ public class BlackjackGame : MonoBehaviour
     private List<GameObject> activeCardObjects = new List<GameObject>();
 
     [Header("UI")]
-    [SerializeField] private TMPro.TextMeshProUGUI playerScoreText;
-    [SerializeField] private TMPro.TextMeshProUGUI dealerScoreText;
-    [SerializeField] private TMPro.TextMeshProUGUI statusText;
-
-    [SerializeField] private GameObject hitButton;
-    [SerializeField] private GameObject standButton;
+    [SerializeField] private TMPro.TextMeshProUGUI playerScoreText; //remove later
+    [SerializeField] private TMPro.TextMeshProUGUI dealerScoreText; //remove later
 
     [Header("Betting UI")]
-    [SerializeField] private TMPro.TextMeshProUGUI moneyText;
-    [SerializeField] private TMPro.TextMeshProUGUI betText;
-
-    [SerializeField] private GameObject betUpButton;
-    [SerializeField] private GameObject betDownButton;
-    [SerializeField] private GameObject dealButton;
+    [SerializeField] private TMPro.TextMeshProUGUI moneyText; //remove later
+    [SerializeField] private TMPro.TextMeshProUGUI betText; //remove later
 
     //Betting Variables
     private int playerMoney = 500;
@@ -151,6 +167,8 @@ public class BlackjackGame : MonoBehaviour
     private bool isKnifeActive = false;
     private bool isScissorsAvailable = true; //use once per round
     private int scissorsValueReduction = 0;
+    private bool isPrayerBeadsAvailable = true; //use once per round
+    private bool isPrayerBeadsActive = false;
 
     public int PlayerMoney
     {
@@ -194,19 +212,20 @@ public class BlackjackGame : MonoBehaviour
                 DecreaseBet();
             }
 
-            if(Input.GetKeyDown(KeyCode.Space) && dealButton.activeInHierarchy)
+            bool canDeal = currentBet >= minBet && PlayerMoney >= currentBet;
+            if(Input.GetKeyDown(KeyCode.Space) && canDeal)
             {
                 Deal();
             }
         }
         else //Handle playing actions.
         {
-            if(Input.GetKeyDown(KeyCode.H) && hitButton.activeInHierarchy)
+            if(Input.GetKeyDown(KeyCode.H))
             {
                 Hit();
             }
 
-            if(Input.GetKeyDown(KeyCode.S) && standButton.activeInHierarchy)
+            if(Input.GetKeyDown(KeyCode.S))
             {
                 Stand();
             }
@@ -219,6 +238,11 @@ public class BlackjackGame : MonoBehaviour
             if(Input.GetKeyDown(KeyCode.Alpha2) && isScissorsAvailable)
             {
                 ActivateScissors();
+            }
+
+            if(Input.GetKeyDown(KeyCode.Alpha3) && isPrayerBeadsAvailable)
+            {
+                ActivatePrayerBeads();
             }
         }
     }
@@ -236,8 +260,6 @@ public class BlackjackGame : MonoBehaviour
         activeCardObjects.Clear();
         playerHand.Clear();
         dealerHand.Clear();
-
-        Debug.Log("Table cleared: Card objects destroyed, hands and object references reset.");
     }
 
     //Helper function to update all betting related text and button states
@@ -245,15 +267,6 @@ public class BlackjackGame : MonoBehaviour
     {
         moneyText.text = $"Money: ${PlayerMoney}";
         betText.text = $"Current Bet: ${currentBet}";
-
-        bool isBetUpActive = !isRoundActive && (PlayerMoney >= currentBet + betStep);
-
-        betUpButton.SetActive(isBetUpActive);
-
-        bool isBetDownActive = !isRoundActive && currentBet > minBet;
-
-        betDownButton.SetActive(isBetDownActive);
-        dealButton.SetActive(!isRoundActive && currentBet >= minBet && PlayerMoney >= currentBet);
     }
 
     public void IncreaseBet()
@@ -298,9 +311,7 @@ public class BlackjackGame : MonoBehaviour
         isKnifeActive = true;
         isKnifeAvailable = false;
 
-        statusText.text = statusText.text.Replace("Press 1 to use [Knife] (Available)", "[Knife] ACTIVATED! Dealer is forced to stand.");
-
-        Debug.Log("Knife activated!");
+        Debug.Log("Knife activated"); //remove later
     }
 
     public void ActivateScissors()
@@ -320,15 +331,21 @@ public class BlackjackGame : MonoBehaviour
 
         isScissorsAvailable = false;
 
-        string originalRankText = visibleDealerCard.cardData.rank.ToString();
-        string statusUpdate = $"[Scissors] ACTIVATED! Dealer's {originalRankText} is reduced by {scissorsValueReduction} to {halvedValue}.";
-
-        statusText.text = statusText.text.Replace("Press 2 to use [Scissors] (Available)", statusUpdate);
-        statusText.text = statusText.text.Replace("Press 1 to use [Knife] (Available)", "");
-
         UpdateUI(true);
 
-        Debug.Log($"Scissors activated! Original value: {originalValue}, Halved value (rounded up): {halvedValue}. Reduction: {scissorsValueReduction}");
+        Debug.Log($"Scissors activated"); //remove later
+    }
+
+    public void ActivatePrayerBeads()
+    {
+        if(!isRoundActive || isPrayerBeadsActive || !isPrayerBeadsAvailable) return;
+
+        if(CalculateHandValue(playerHand) > 21) return;
+
+        isPrayerBeadsActive = true;
+        isPrayerBeadsAvailable = false;
+
+        Debug.Log("Prayer activated"); //remove later
     }
 
     //Calculates the total value of a hand. Aces are 1 or 11.
@@ -389,11 +406,6 @@ public class BlackjackGame : MonoBehaviour
                 cardPrefabLookup.Add((cardVisual.rank, cardVisual.suit), cardVisual.cardPrefab);
             }
         }
-
-        if(cardPrefabLookup.Count != 52)
-        {
-            Debug.LogWarning($"Card lookup only contains {cardPrefabLookup.Count} entries. Ensure all 52 cards are assigned in the Inspector!");
-        }
     }
 
 
@@ -411,6 +423,8 @@ public class BlackjackGame : MonoBehaviour
         isKnifeAvailable = true;
         isScissorsAvailable = true;
         scissorsValueReduction = 0;
+        isPrayerBeadsAvailable = true;
+        isPrayerBeadsActive = false;
 
         //Set bet to the last valid bet
         if(currentBet > PlayerMoney)
@@ -426,21 +440,6 @@ public class BlackjackGame : MonoBehaviour
         dealerScoreText.text = "Dealer Score: 0";
 
         UpdateBettingUI();
-
-        statusText.text = PlayerMoney > 0
-            ? $"Place your bet (Minimum ${minBet}). You have ${PlayerMoney}."
-            : "GAME OVER. You ran out of money.";
-
-        hitButton.SetActive(false);
-        standButton.SetActive(false);
-
-        //Final check if player is broke
-        if(PlayerMoney < minBet)
-        {
-            betUpButton.SetActive(false);
-            betDownButton.SetActive(false);
-            dealButton.SetActive(false);
-        }
     }
 
     //Locks the bet and starts the round
@@ -450,21 +449,11 @@ public class BlackjackGame : MonoBehaviour
 
         isRoundActive = true;
 
-        betUpButton.SetActive(false);
-        betDownButton.SetActive(false);
-        dealButton.SetActive(false);
-
         DealCardToPlayer();
         DealCardToDealer(false); //Dealers first card is visible
         DealCardToPlayer();
         DealCardToDealer(true); //Dealers second card is hidden
         UpdateUI();
-
-        statusText.text = $"Round started! Bet: ${currentBet}. Your turn.";
-
-        hitButton.SetActive(true);
-        standButton.SetActive(true);
-
         CheckBlackjack();
     }
 
@@ -515,16 +504,9 @@ public class BlackjackGame : MonoBehaviour
     }
 
     //Instantiates a card, sets its data, and adds it to the specified hand.
-    private CardInstance DealCardInstance(List<CardInstance> hand, Transform parentTransform, bool isHidden)
+    private CardInstance DealCardInstance(Card newCardData, List<CardInstance> hand, Transform parentTransform, bool isHidden)
     {
-        Card newCardData = gameDeck.DealCard();
-
-        if(!cardPrefabLookup.TryGetValue((newCardData.rank, newCardData.suit), out GameObject cardPrefabToUse))
-        {
-            Debug.LogError($"Prefab not found for {newCardData.rank} of {newCardData.suit}! Dealing failed.");
-
-            return null;
-        }
+        if(!cardPrefabLookup.TryGetValue((newCardData.rank, newCardData.suit), out GameObject cardPrefabToUse)) return null;
 
         GameObject cardObject = Instantiate(cardPrefabToUse, parentTransform);
 
@@ -532,12 +514,7 @@ public class BlackjackGame : MonoBehaviour
 
         CardDisplay cardDisplay = cardObject.GetComponent<CardDisplay>();
 
-        if(cardDisplay == null)
-        {
-            Debug.LogError($"CardDisplay component missing on prefab: {cardPrefabToUse.name}!");
-
-            return null;
-        }
+        if(cardDisplay == null) return null;
 
         cardDisplay.SetHidden(isHidden);
 
@@ -552,12 +529,76 @@ public class BlackjackGame : MonoBehaviour
 
     private void DealCardToPlayer()
     {
-        DealCardInstance(playerHand, playerCardPosition, false);
+        Card newCardData;
+
+        bool dealtSpecificCard = false;
+
+        if(isPrayerBeadsActive)
+        {
+            isPrayerBeadsActive = false;
+
+            int playerValue = CalculateHandValue(playerHand);
+            int idealValue = 21 - playerValue;
+            int searchMaxValue = Mathf.Min(idealValue, 10); //max value it can find is 10
+
+            Card? dealtCard = null;
+
+            //Searches for the highest possible card that doesn't bust the player
+            for(int value = searchMaxValue; value >= 2; value--)
+            {
+                if(value == 11 || value == 1) continue;
+
+                if(value >= 10)
+                {
+                    Card.Rank[] faceRanks = { Card.Rank.Ten, Card.Rank.Jack, Card.Rank.Queen, Card.Rank.King };
+
+                    foreach(var faceRank in faceRanks)
+                    {
+                        dealtCard = gameDeck.DealSpecificCard(faceRank);
+
+                        if(dealtCard.HasValue) break;
+                    }
+                }
+                else
+                {
+                    Card.Rank rankToSearch = (Card.Rank)value;
+
+                    dealtCard = gameDeck.DealSpecificCard(rankToSearch);
+                }
+
+                if(dealtCard.HasValue) break; //Found a benificial card
+            }
+
+            //If no suitable card was found, try to get an Ace
+            if(!dealtCard.HasValue)
+            {
+                dealtCard = gameDeck.DealSpecificCard(Card.Rank.Ace);
+            }
+
+            if(dealtCard.HasValue)
+            {
+                newCardData = dealtCard.Value;
+
+                dealtSpecificCard = true;
+            }
+            else
+            {
+                newCardData = gameDeck.DealCard();
+            }
+        }
+        else //Normal hit, deal a random card
+        {
+            newCardData = gameDeck.DealCard();
+        }
+
+        DealCardInstance(newCardData, playerHand, playerCardPosition, false);
     }
 
     private void DealCardToDealer(bool isHidden)
     {
-        DealCardInstance(dealerHand, dealerCardPosition, isHidden);
+        Card newCardData = gameDeck.DealCard();
+
+        DealCardInstance(newCardData, dealerHand, dealerCardPosition, isHidden);
     }
 
     //Updates the score, money, and checks for busts.
@@ -578,17 +619,12 @@ public class BlackjackGame : MonoBehaviour
 
         if(playerValue > 21 && isRoundActive && currentBustCoroutine == null)
         {
-            hitButton.SetActive(false);
-            standButton.SetActive(false);
-
             currentBustCoroutine = StartCoroutine(BustCheckCoroutine());
         }
     }
 
     private IEnumerator BustCheckCoroutine()
     {
-        statusText.text = "BUST! Waiting...";
-
         yield return new WaitForSeconds(2f);
 
         EndGame("Bust! You lose.");
@@ -600,13 +636,10 @@ public class BlackjackGame : MonoBehaviour
     {
         if(!isRoundActive) return;
 
+        //bool wasPrayerBeadsActive = isPrayerBeadsActive;
+
         DealCardToPlayer();
         UpdateUI();
-
-        string abilityStatus = "";
-
-        if(isKnifeAvailable) abilityStatus += "Press 1 to use [Knife] (Available). ";
-        if(isScissorsAvailable) abilityStatus += "Press 2 to use [Scissors] (Available).";
 
         if(scissorsValueReduction > 0)
         {
@@ -614,21 +647,12 @@ public class BlackjackGame : MonoBehaviour
 
             int originalValue = visibleDealerCard.cardData.GetValue();
             int halvedValue = Mathf.CeilToInt((float)originalValue / 2f);
-
-            abilityStatus = $"[Scissors] ACTIVATED! Dealer's {visibleDealerCard.cardData.rank.ToString()} is reduced by {scissorsValueReduction} to {halvedValue}.";
         }
-
-        statusText.text = $"Round started! Bet: ${currentBet}. Your turn. Press H to Hit or S to Stand.\n{abilityStatus}";
     }
 
     public void Stand()
     {
         if(!isRoundActive) return;
-
-        statusText.text = "Player stands. Dealer's turn...";
-
-        hitButton.SetActive(false);
-        standButton.SetActive(false);
 
         StartCoroutine(DealerTurnCoroutine());
     }
@@ -667,16 +691,12 @@ public class BlackjackGame : MonoBehaviour
 
         if(isKnifeActive)
         {
-            statusText.text = "Knife activated! Dealer is forced to stand.";
-
             yield return new WaitForSeconds(2f);
         }
         else
         {
             while(dealerValue < 17)
             {
-                statusText.text = "Dealer hits...";
-
                 DealCardToDealer(false);
                 UpdateUI(false);
 
@@ -687,8 +707,6 @@ public class BlackjackGame : MonoBehaviour
         }
 
         string resultMessage = DetermineWinner(playerValue, dealerValue);
-
-        statusText.text = $"Dealer finishes at {dealerValue}. {resultMessage}";
 
         yield return new WaitForSeconds(2f);
 
@@ -723,53 +741,24 @@ public class BlackjackGame : MonoBehaviour
     {
         isRoundActive = false;
 
-        string followUpMessage;
-
         if(message.Contains("You win") || message.Contains("Blackjack! You win"))
         {
             PlayerMoney += currentBet;
-            followUpMessage = $"WIN! {message} You won ${currentBet}.";
         }
         else if(message.Contains("It's a tie"))
         {
-            followUpMessage = $"TIE! {message} Your bet (${currentBet}) is returned.";
+            
         }
         else
         {
             PlayerMoney -= currentBet;
-
-            followUpMessage = $"LOSS! {message} You lost ${currentBet}.";
         }
 
         UpdateUI(false);
+        
+        if(PlayerMoney < minBet) return;
 
-        if(PlayerMoney < minBet)
-        {
-            statusText.text = $"GAME OVER! You ran out of money. Final total: ${PlayerMoney}";
-
-            hitButton.SetActive(false);
-            standButton.SetActive(false);
-            betUpButton.SetActive(false);
-            betDownButton.SetActive(false);
-            dealButton.SetActive(false);
-
-            return;
-        }
-
-        if(PlayerMoney >= 10000)
-        {
-            statusText.text = $"YOU WIN THE GAME! Congratulations, you reached the goal of $10.000!";
-
-            hitButton.SetActive(false);
-            standButton.SetActive(false);
-            betUpButton.SetActive(false);
-            betDownButton.SetActive(false);
-            dealButton.SetActive(false);
-
-            return;
-        }
-
-        statusText.text = $"{followUpMessage} Place your next bet and press DEAL.";
+        if(PlayerMoney >= 10000) return;
 
         StartGame();
     }

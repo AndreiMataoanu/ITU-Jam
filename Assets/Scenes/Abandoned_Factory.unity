@@ -4661,42 +4661,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 82627b0d40388384693cf0f7295139b1, type: 3}
---- !u!1 &219705797 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 6537135494126768319, guid: 82627b0d40388384693cf0f7295139b1, type: 3}
-  m_PrefabInstance: {fileID: 219705796}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &219705798 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 359800100979022243, guid: 82627b0d40388384693cf0f7295139b1, type: 3}
-  m_PrefabInstance: {fileID: 219705796}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &219705799 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1504475400450280109, guid: 82627b0d40388384693cf0f7295139b1, type: 3}
-  m_PrefabInstance: {fileID: 219705796}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &219705800 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 6982241896907718194, guid: 82627b0d40388384693cf0f7295139b1, type: 3}
-  m_PrefabInstance: {fileID: 219705796}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &219705801 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 744518833642443655, guid: 82627b0d40388384693cf0f7295139b1, type: 3}
-  m_PrefabInstance: {fileID: 219705796}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &219705802 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 8427715831770063102, guid: 82627b0d40388384693cf0f7295139b1, type: 3}
-  m_PrefabInstance: {fileID: 219705796}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
 --- !u!114 &219705803 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 2922880402206445372, guid: 82627b0d40388384693cf0f7295139b1, type: 3}
@@ -48595,33 +48559,9 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 219705803}
     - target: {fileID: 4234581667304054485, guid: b5f91f3a40d022d478e486e8004f5832, type: 3}
-      propertyPath: hitButton
-      value: 
-      objectReference: {fileID: 219705798}
-    - target: {fileID: 4234581667304054485, guid: b5f91f3a40d022d478e486e8004f5832, type: 3}
       propertyPath: moneyText
       value: 
       objectReference: {fileID: 219705804}
-    - target: {fileID: 4234581667304054485, guid: b5f91f3a40d022d478e486e8004f5832, type: 3}
-      propertyPath: dealButton
-      value: 
-      objectReference: {fileID: 219705799}
-    - target: {fileID: 4234581667304054485, guid: b5f91f3a40d022d478e486e8004f5832, type: 3}
-      propertyPath: statusText
-      value: 
-      objectReference: {fileID: 219705802}
-    - target: {fileID: 4234581667304054485, guid: b5f91f3a40d022d478e486e8004f5832, type: 3}
-      propertyPath: betUpButton
-      value: 
-      objectReference: {fileID: 219705801}
-    - target: {fileID: 4234581667304054485, guid: b5f91f3a40d022d478e486e8004f5832, type: 3}
-      propertyPath: standButton
-      value: 
-      objectReference: {fileID: 219705797}
-    - target: {fileID: 4234581667304054485, guid: b5f91f3a40d022d478e486e8004f5832, type: 3}
-      propertyPath: betDownButton
-      value: 
-      objectReference: {fileID: 219705800}
     - target: {fileID: 4234581667304054485, guid: b5f91f3a40d022d478e486e8004f5832, type: 3}
       propertyPath: dealerScoreText
       value: 
