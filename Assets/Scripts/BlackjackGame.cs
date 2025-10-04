@@ -128,6 +128,28 @@ public class BlackjackGame : MonoBehaviour
     [SerializeField] private GameObject hitButton;
     [SerializeField] private GameObject standButton;
 
+    [Header("Betting UI")]
+    [SerializeField] private TMPro.TextMeshProUGUI moneyText;
+    [SerializeField] private TMPro.TextMeshProUGUI betText;
+
+    [SerializeField] private GameObject betUpButton;
+    [SerializeField] private GameObject betDownButton;
+    [SerializeField] private GameObject dealButton;
+
+    //Betting Variables
+    private int playerMoney = 500;
+    private int currentBet = 100;
+    private const int betStep = 100;
+    private const int minBet = 100;
+
+    private bool isRoundActive = false;
+
+    public int PlayerMoney
+    {
+        get { return playerMoney; }
+        private set { playerMoney = value; }
+    }
+
     [Header("Visual Setup")]
     [SerializeField] private List<CardVisuals> cardPrefabs = new List<CardVisuals>();
 
@@ -145,6 +167,55 @@ public class BlackjackGame : MonoBehaviour
 
         InitializeCardLookup();
         StartGame();
+    }
+
+    private void UpdateBettingUI()
+    {
+        moneyText.text = $"Money: ${PlayerMoney}";
+        betText.text = $"Current Bet: ${currentBet}";
+
+        bool canBetUp = !isRoundActive && currentBet < PlayerMoney;
+        betUpButton.SetActive(canBetUp);
+
+        bool canBetDown = !isRoundActive && currentBet > minBet;
+        betDownButton.SetActive(canBetDown);
+
+        dealButton.SetActive(!isRoundActive && currentBet >= minBet && PlayerMoney >= currentBet);
+    }
+
+    public void IncreaseBet()
+    {
+        if(isRoundActive) return;
+
+        int nextBet = currentBet + betStep;
+
+        if(nextBet > PlayerMoney)
+        {
+            currentBet = PlayerMoney;
+        }
+        else
+        {
+            currentBet = nextBet;
+        }
+
+        UpdateBettingUI();
+    }
+
+    public void DecreaseBet()
+    {
+        if(isRoundActive) return;
+
+        if(currentBet > minBet)
+        {
+            currentBet -= betStep;
+        }
+
+        if(currentBet < minBet)
+        {
+            currentBet = minBet;
+        }
+
+        UpdateBettingUI();
     }
 
     //Initializes the card prefab lookup dictionary for quick access.
@@ -197,8 +268,7 @@ public class BlackjackGame : MonoBehaviour
         return value;
     }
 
-    //Resets the game and deals cards
-    public void StartGame()
+    private void ClearTable()
     {
         foreach(GameObject cardObject in activeCardObjects)
         {
@@ -208,6 +278,55 @@ public class BlackjackGame : MonoBehaviour
         activeCardObjects.Clear();
         playerHand.Clear();
         dealerHand.Clear();
+    }
+
+    //Resets the game and deals cards
+    public void StartGame()
+    {
+        ClearTable();
+
+        gameDeck.Shuffle();
+
+        isRoundActive = false;
+
+        if(currentBet > PlayerMoney)
+        {
+            currentBet = PlayerMoney;
+        }
+        if(currentBet < minBet)
+        {
+            currentBet = minBet;
+        }
+
+        playerScoreText.text = "Player Score: 0";
+        dealerScoreText.text = "Dealer Score: 0";
+
+        UpdateBettingUI();
+
+        statusText.text = PlayerMoney > 0
+            ? $"Place your bet (Minimum ${minBet}). You have ${PlayerMoney}."
+            : "GAME OVER. You ran out of money.";
+
+        hitButton.SetActive(false);
+        standButton.SetActive(false);
+
+        if(PlayerMoney < minBet)
+        {
+            betUpButton.SetActive(false);
+            betDownButton.SetActive(false);
+            dealButton.SetActive(false);
+        }
+    }
+
+    public void Deal()
+    {
+        if(isRoundActive || currentBet < minBet || PlayerMoney < currentBet) return;
+
+        isRoundActive = true;
+
+        betUpButton.SetActive(false);
+        betDownButton.SetActive(false);
+        dealButton.SetActive(false);
         gameDeck.Shuffle();
 
         DealCardToPlayer();
@@ -216,7 +335,7 @@ public class BlackjackGame : MonoBehaviour
         DealCardToDealer(true); //Dealers second card is hidden
         UpdateUI();
 
-        statusText.text = "Game started! Your turn.";
+        statusText.text = $"Round started! Bet: ${currentBet}. Your turn.";
 
         hitButton.SetActive(true);
         standButton.SetActive(true);
@@ -270,7 +389,6 @@ public class BlackjackGame : MonoBehaviour
     {
         Card newCardData = gameDeck.DealCard();
 
-        //temp
         if(!cardPrefabLookup.TryGetValue((newCardData.rank, newCardData.suit), out GameObject cardPrefabToUse))
         {
             Debug.LogError($"Prefab not found for {newCardData.rank} of {newCardData.suit}! Dealing failed.");
@@ -284,7 +402,6 @@ public class BlackjackGame : MonoBehaviour
 
         CardDisplay cardDisplay = cardObject.GetComponent<CardDisplay>();
 
-        //temp
         if(cardDisplay == null)
         {
             Debug.LogError($"CardDisplay component missing on prefab: {cardPrefabToUse.name}!");
@@ -327,6 +444,8 @@ public class BlackjackGame : MonoBehaviour
 
         dealerScoreText.text = $"Dealer Score: {(dealerHidden && dealerHand.Count > 1 ? $"{dealerVisibleValue} + ?" : dealerVisibleValue.ToString())}";
 
+        UpdateBettingUI();
+
         if(playerValue > 21)
         {
             EndGame("Bust! You lose.");
@@ -335,12 +454,16 @@ public class BlackjackGame : MonoBehaviour
 
     public void Hit()
     {
+        if(!isRoundActive) return;
+
         DealCardToPlayer();
         UpdateUI();
     }
 
     public void Stand()
     {
+        if(!isRoundActive) return;
+
         statusText.text = "Player stands. Dealer's turn...";
 
         hitButton.SetActive(false);
@@ -425,9 +548,43 @@ public class BlackjackGame : MonoBehaviour
 
     private void EndGame(string message)
     {
-        statusText.text = $"{message} Press Start Game to play again.";
+        isRoundActive = false;
 
-        hitButton.SetActive(false);
-        standButton.SetActive(false);
+        if(message.Contains("You win") || message.Contains("Blackjack! You win"))
+        {
+            PlayerMoney += currentBet;
+
+            statusText.text = $"WIN! {message} You won ${currentBet}. Press Start Game to play again.";
+        }
+        else if(message.Contains("It's a tie"))
+        {
+            statusText.text = $"PUSH! {message} Your bet (${currentBet}) is returned. Press Start Game to play again.";
+        }
+        else
+        {
+            PlayerMoney -= currentBet;
+
+            statusText.text = $"LOSS! {message} You lost ${currentBet}. Press Start Game to play again.";
+        }
+
+        UpdateUI(false);
+
+        if(PlayerMoney < minBet)
+        {
+            statusText.text = $"GAME OVER! You ran out of money. Final total: ${PlayerMoney}";
+
+            hitButton.SetActive(false);
+            standButton.SetActive(false);
+            betUpButton.SetActive(false);
+            betDownButton.SetActive(false);
+            dealButton.SetActive(false);
+
+            return;
+        }
+
+        currentBet = currentBet > PlayerMoney ? PlayerMoney : currentBet;
+        currentBet = currentBet < minBet ? minBet : currentBet;
+
+        UpdateBettingUI();
     }
 }
