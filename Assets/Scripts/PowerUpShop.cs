@@ -60,14 +60,13 @@ public class PowerUpShop : MonoBehaviour
         for (int i = 0; i < powerUpCount - 1; i++)
         {
             GameObject powerUp = gameObject.transform.GetChild(i).gameObject;
-            if (!powerUp.GetComponent<PowerUpInfo>().isSelected)
-                Destroy(powerUp);
+            Destroy(powerUp);
         }
     }
 
     private void HighlightPowerUp()
     {
-        if (_hasSelected) return;
+        if (_inventoryManagement.inInventory || _hasSelected) return;
         
         if (_highlight)
         {
@@ -99,12 +98,14 @@ public class PowerUpShop : MonoBehaviour
 
     private void SelectPowerUp()
     {
+        if (_inventoryManagement.inInventory) return;
+        
         if (!_hasSelected && Mouse.current.leftButton.wasPressedThisFrame)
         {
             if (_highlight)
             {
                 _selection = _raycastHit.transform;
-                _selection.gameObject.GetComponent<Outline>().enabled = true;
+                _selection.gameObject.GetComponent<Outline>().enabled = false;
                 _highlight = null;
                 _hasSelected = true;
 
@@ -125,7 +126,6 @@ public class PowerUpShop : MonoBehaviour
     private void BuySelectedPowerUp()
     {
         var selectionInfo = _selection.gameObject.GetComponent<PowerUpInfo>();
-        selectionInfo.isSelected = true;
                 
         if (_inventoryManagement.AddItem(_selection.gameObject))
             _moneyManagement.LoseAmount(selectionInfo.price);
