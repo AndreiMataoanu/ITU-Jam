@@ -34,6 +34,7 @@ public class CameraController : MonoBehaviour
     {
         targetPos = defaultPos;
         targetRot = Quaternion.Euler(defaultRot);
+        isMoving = true;
         transform.localPosition = defaultPos;
         transform.localEulerAngles = defaultRot;
         sensitivity = defaultSensitivity;
@@ -84,7 +85,7 @@ public class CameraController : MonoBehaviour
             {
                 transform.localPosition = targetPos;
                 transform.localRotation = targetRot;
-                isMoving = false;
+                //isMoving = false;
             }
         }
     }
