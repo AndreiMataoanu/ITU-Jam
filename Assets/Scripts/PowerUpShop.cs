@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -29,7 +30,7 @@ public class PowerUpShop : MonoBehaviour
 
     void Start()
     {
-        SpawnPowerUp();
+        SpawnPowerUps();
     }
 
     void Update()
@@ -38,7 +39,7 @@ public class PowerUpShop : MonoBehaviour
         SelectPowerUp();
     }
 
-    private void SpawnPowerUp()
+    private void SpawnPowerUps()
     {
         if (powerUpPrefabs == null || powerUpPrefabs.Count() < powerUpCount) return;
         
@@ -47,6 +48,14 @@ public class PowerUpShop : MonoBehaviour
             int randomIndex = Random.Range(0, powerUpPrefabs.Length);
             Vector3 prefabPosition = transform.position + Vector3.up * i * spaceOffset;
             Instantiate(powerUpPrefabs[randomIndex], prefabPosition, Quaternion.identity, transform);
+        }
+    }
+
+    private void DestroyPowerUps()
+    {
+        for (int i = 0; i < powerUpCount; i++)
+        {
+            Destroy(gameObject.transform.GetChild(i).gameObject);
         }
     }
 
@@ -96,8 +105,15 @@ public class PowerUpShop : MonoBehaviour
                 var selectionInfo = _selection.gameObject.GetComponent<PowerUpInfo>();
                 selectionInfo.isSelected = true;
                 _moneyManagement.LoseAmount(selectionInfo.price);
+
+                StartCoroutine(DestroyPowerUpsCoroutine());
             }
         }
     }
-    
+
+    IEnumerator DestroyPowerUpsCoroutine()
+    {
+        yield return new WaitForSeconds(2f);
+        DestroyPowerUps();
+    }
 }
