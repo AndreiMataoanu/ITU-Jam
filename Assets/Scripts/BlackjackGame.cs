@@ -144,6 +144,8 @@ public class BlackjackGame : MonoBehaviour
 
     private bool isRoundActive = false;
 
+    private Coroutine currentBustCoroutine = null;
+
     public int PlayerMoney
     {
         get { return playerMoney; }
@@ -172,6 +174,8 @@ public class BlackjackGame : MonoBehaviour
 
     private void Update()
     {
+        if(currentBustCoroutine != null) return;
+
         if(!isRoundActive)
         {
             if(Input.GetKeyDown(KeyCode.UpArrow))
@@ -384,7 +388,6 @@ public class BlackjackGame : MonoBehaviour
         CheckBlackjack();
     }
 
-
     private void CheckBlackjack()
     {
         if(CalculateHandValue(playerHand) == 21)
@@ -493,10 +496,24 @@ public class BlackjackGame : MonoBehaviour
 
         UpdateBettingUI();
 
-        if(playerValue > 21 && isRoundActive)
+        if(playerValue > 21 && isRoundActive && currentBustCoroutine == null)
         {
-            EndGame("Bust! You lose.");
+            hitButton.SetActive(false);
+            standButton.SetActive(false);
+
+            currentBustCoroutine = StartCoroutine(BustCheckCoroutine());
         }
+    }
+
+    private IEnumerator BustCheckCoroutine()
+    {
+        statusText.text = "BUST! Waiting...";
+
+        yield return new WaitForSeconds(2f);
+
+        EndGame("Bust! You lose.");
+
+        currentBustCoroutine = null;
     }
 
     public void Hit()
@@ -532,7 +549,7 @@ public class BlackjackGame : MonoBehaviour
             UpdateUI(false);
             UpdateHandVisuals(dealerHand);
 
-            yield return new WaitForSeconds(1.0f);
+            yield return new WaitForSeconds(2f);
         }
 
         int dealerValue = CalculateHandValue(dealerHand);
@@ -560,11 +577,15 @@ public class BlackjackGame : MonoBehaviour
 
             dealerValue = CalculateHandValue(dealerHand);
 
-            yield return new WaitForSeconds(1.5f);
+            yield return new WaitForSeconds(2f);
         }
 
         //Show winner
         string resultMessage = DetermineWinner(playerValue, dealerValue);
+
+        statusText.text = $"Dealer finishes at {dealerValue}. {resultMessage}";
+
+        yield return new WaitForSeconds(2f);
 
         EndGame(resultMessage);
     }
@@ -620,6 +641,19 @@ public class BlackjackGame : MonoBehaviour
         if(PlayerMoney < minBet)
         {
             statusText.text = $"GAME OVER! You ran out of money. Final total: ${PlayerMoney}";
+
+            hitButton.SetActive(false);
+            standButton.SetActive(false);
+            betUpButton.SetActive(false);
+            betDownButton.SetActive(false);
+            dealButton.SetActive(false);
+
+            return;
+        }
+
+        if(PlayerMoney >= 10000)
+        {
+            statusText.text = $"YOU WIN THE GAME! Congratulations, you reached the goal of $10.000!";
 
             hitButton.SetActive(false);
             standButton.SetActive(false);
