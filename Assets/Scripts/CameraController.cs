@@ -8,11 +8,15 @@ public class CameraController : MonoBehaviour
     [SerializeField] private float moveSpeed = 5f;
     [SerializeField] private GameObject powerUpManager;
     
+
+    [SerializeField] private Transform shopShoulder;
+    [SerializeField] private Transform shopElbow;
+
     private Vector3 defaultRot = new Vector3(20f, -60f, 0f);
     private Vector3 defaultPos = new Vector3(0f, -0.5f, 0.5f);
     private Vector3 itemBoxRot = new Vector3(20f, -60f, 0f); //rotation when looking at item box
     private Vector3 itemBoxPos = new Vector3(0f, -1f, 1f); //position when looking at item box
-    private Vector3 shopRot = new Vector3(10f, -120f, 0f); //rotation when looking at shop
+    private Vector3 shopRot = new Vector3(10f, -140f, 0f); //rotation when looking at shop
     private Vector3 shopPos = new Vector3(0f, -0.5f, 0.5f); //position when looking at shop
 
     private bool lookingAtItemBox = false;
@@ -60,11 +64,13 @@ public class CameraController : MonoBehaviour
         else if (!lookingAtShop && !lookingAtItemBox && Input.GetKeyDown(KeyCode.A))
         {
             EnterShop();
+            StartCoroutine("OpenShop");
         }
         else if (lookingAtShop && Input.GetKeyDown(KeyCode.D))
         {
             _powerUpShop.DestroyPowerUps();
             EnterDefault();
+            StartCoroutine("CloseShop");
         }
 
         if (isMoving)
@@ -121,6 +127,23 @@ public class CameraController : MonoBehaviour
         sensitivity = defaultSensitivity;
         CursorLock(true);
         isMoving = true;
+    }
+
+    private IEnumerator OpenShop()
+    {
+        yield return new WaitForSeconds(0.25f);
+        shopShoulder.localEulerAngles = new Vector3(0f, 0f, 0f);
+        yield return new WaitForSeconds(0.25f);
+        shopElbow.localEulerAngles = new Vector3(0f, -15f, 0f);
+
+    }
+
+    private IEnumerator CloseShop()
+    {
+        yield return new WaitForSeconds(0.1f);
+        shopShoulder.localEulerAngles = new Vector3(0f, -80f, 0f);
+        yield return new WaitForSeconds(0.1f);
+        shopElbow.localEulerAngles = new Vector3(0f, -90f, 0f);
     }
 
     private void CursorLock(bool locked)
