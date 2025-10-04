@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8125781961677254537}
+  - component: {fileID: 7996524137897327851}
   m_Layer: 0
   m_Name: QueenDiamonds
   m_TagString: Untagged
@@ -33,6 +34,20 @@ Transform:
   - {fileID: 1034253952868801219}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7996524137897327851
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2329265860390348110}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea83397618944ff4cb73cbbc332663ac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CardDisplay
+  cardBack: {fileID: 4821019942377553998}
+  cardFace: {fileID: 7913351640829816578}
 --- !u!1 &4821019942377553998
 GameObject:
   m_ObjectHideFlags: 0

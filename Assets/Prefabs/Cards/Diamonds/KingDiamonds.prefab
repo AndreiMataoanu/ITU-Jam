@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4360644623366031155}
+  - component: {fileID: 3703537159883484117}
   m_Layer: 0
   m_Name: KingDiamonds
   m_TagString: Untagged
@@ -33,6 +34,20 @@ Transform:
   - {fileID: 3372097146399182801}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3703537159883484117
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1879694623731606516}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea83397618944ff4cb73cbbc332663ac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CardDisplay
+  cardBack: {fileID: 7213392836757635431}
+  cardFace: {fileID: 5579207857578687974}
 --- !u!1 &5579207857578687974
 GameObject:
   m_ObjectHideFlags: 0

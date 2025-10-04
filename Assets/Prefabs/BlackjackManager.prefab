@@ -1,0 +1,211 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &981863201417496706
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5546812090285593363}
+  - component: {fileID: 4234581667304054485}
+  m_Layer: 0
+  m_Name: BlackjackManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5546812090285593363
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 981863201417496706}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4234581667304054485
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 981863201417496706}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d681071c0ffcd6944a3b712dc7947bf6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BlackjackGame
+  playerScoreText: {fileID: 0}
+  dealerScoreText: {fileID: 0}
+  statusText: {fileID: 0}
+  hitButton: {fileID: 0}
+  standButton: {fileID: 0}
+  cardPrefabs:
+  - rank: 1
+    suit: 0
+    cardPrefab: {fileID: 3673046065002717599, guid: ce8c09887bb53dd40b364b53952656ba, type: 3}
+  - rank: 2
+    suit: 0
+    cardPrefab: {fileID: 7082712968241337282, guid: eb79d20ee6bc63747b30b9682f568856, type: 3}
+  - rank: 3
+    suit: 0
+    cardPrefab: {fileID: 5117572731295478800, guid: 648f52f5d2b07f24f881c1fc6edff4d2, type: 3}
+  - rank: 4
+    suit: 0
+    cardPrefab: {fileID: 4143822073266004646, guid: c0945b582e9eb8b45a20d6d282cf1ef8, type: 3}
+  - rank: 5
+    suit: 0
+    cardPrefab: {fileID: 5735390864612362191, guid: e53bdc18d1872e042b0c6dbd469789fe, type: 3}
+  - rank: 6
+    suit: 0
+    cardPrefab: {fileID: 4468701708395313008, guid: 2277c5092d1f6d94183dc6db6ba26911, type: 3}
+  - rank: 7
+    suit: 0
+    cardPrefab: {fileID: 3295193989897873378, guid: fe15b5c79a29fc2469a49b7e2b1a5d03, type: 3}
+  - rank: 8
+    suit: 0
+    cardPrefab: {fileID: 2705524920817293040, guid: 2e64f28e3aeba2f4f8f738fae330fa98, type: 3}
+  - rank: 9
+    suit: 0
+    cardPrefab: {fileID: 7225111605073769134, guid: 44de52a1f9e0fb64fa17fbba48f1b61e, type: 3}
+  - rank: 10
+    suit: 0
+    cardPrefab: {fileID: 5430568643472981554, guid: 67daeaf1ccc4b8544933990d46bd02cb, type: 3}
+  - rank: 11
+    suit: 0
+    cardPrefab: {fileID: 3586879584025104969, guid: 40ff8535789529d4e9d390c876e7c138, type: 3}
+  - rank: 12
+    suit: 0
+    cardPrefab: {fileID: 5536590352048888005, guid: 80845532879ca934f9f135418897d23c, type: 3}
+  - rank: 13
+    suit: 0
+    cardPrefab: {fileID: 730717619493545140, guid: ce7ee2f3600d1b046b070214b8fde1b5, type: 3}
+  - rank: 1
+    suit: 1
+    cardPrefab: {fileID: 8484209770104146646, guid: 0446be11a0b8a414eb84d8f9c676624b, type: 3}
+  - rank: 2
+    suit: 1
+    cardPrefab: {fileID: 1599283494925981948, guid: 1b8dad798b106e54eafea092eb9d644c, type: 3}
+  - rank: 3
+    suit: 1
+    cardPrefab: {fileID: 4141131439816059523, guid: 29102bdb47c441346843d7f90ab9828a, type: 3}
+  - rank: 4
+    suit: 1
+    cardPrefab: {fileID: 8423767816167897251, guid: 4a659c3b76c72cf4d9afdb5f98da74a7, type: 3}
+  - rank: 5
+    suit: 1
+    cardPrefab: {fileID: 4190463014891345393, guid: 5cbb0ceb421f6144481c7d139c8f9a8c, type: 3}
+  - rank: 6
+    suit: 1
+    cardPrefab: {fileID: 6225167520831362867, guid: 709ffc31e4a08f7449ebe9601d253d41, type: 3}
+  - rank: 7
+    suit: 1
+    cardPrefab: {fileID: 1038256410009611600, guid: 6af5d7640e6863342b60f1321d559e43, type: 3}
+  - rank: 8
+    suit: 1
+    cardPrefab: {fileID: 4528087844319776244, guid: e4a171a6331cf14489eaadc97c3e092b, type: 3}
+  - rank: 9
+    suit: 1
+    cardPrefab: {fileID: 984498966768771363, guid: 616064023da46bf4d988008cf31776c5, type: 3}
+  - rank: 10
+    suit: 1
+    cardPrefab: {fileID: 8226621636815683265, guid: 78c004f48b0d20746bec076664768154, type: 3}
+  - rank: 11
+    suit: 1
+    cardPrefab: {fileID: 2444038939708354432, guid: e695bc6612812d94d95c31ebc154e51c, type: 3}
+  - rank: 12
+    suit: 1
+    cardPrefab: {fileID: 2329265860390348110, guid: 5e134af57065a1d428ec5a69c16bf994, type: 3}
+  - rank: 0
+    suit: 0
+    cardPrefab: {fileID: 0}
+  - rank: 0
+    suit: 0
+    cardPrefab: {fileID: 0}
+  - rank: 0
+    suit: 0
+    cardPrefab: {fileID: 0}
+  - rank: 0
+    suit: 0
+    cardPrefab: {fileID: 0}
+  - rank: 0
+    suit: 0
+    cardPrefab: {fileID: 0}
+  - rank: 0
+    suit: 0
+    cardPrefab: {fileID: 0}
+  - rank: 0
+    suit: 0
+    cardPrefab: {fileID: 0}
+  - rank: 0
+    suit: 0
+    cardPrefab: {fileID: 0}
+  - rank: 0
+    suit: 0
+    cardPrefab: {fileID: 0}
+  - rank: 0
+    suit: 0
+    cardPrefab: {fileID: 0}
+  - rank: 0
+    suit: 0
+    cardPrefab: {fileID: 0}
+  - rank: 0
+    suit: 0
+    cardPrefab: {fileID: 0}
+  - rank: 0
+    suit: 0
+    cardPrefab: {fileID: 0}
+  - rank: 0
+    suit: 0
+    cardPrefab: {fileID: 0}
+  - rank: 0
+    suit: 0
+    cardPrefab: {fileID: 0}
+  - rank: 0
+    suit: 0
+    cardPrefab: {fileID: 0}
+  - rank: 0
+    suit: 0
+    cardPrefab: {fileID: 0}
+  - rank: 0
+    suit: 0
+    cardPrefab: {fileID: 0}
+  - rank: 0
+    suit: 0
+    cardPrefab: {fileID: 0}
+  - rank: 0
+    suit: 0
+    cardPrefab: {fileID: 0}
+  - rank: 0
+    suit: 0
+    cardPrefab: {fileID: 0}
+  - rank: 0
+    suit: 0
+    cardPrefab: {fileID: 0}
+  - rank: 0
+    suit: 0
+    cardPrefab: {fileID: 0}
+  - rank: 0
+    suit: 0
+    cardPrefab: {fileID: 0}
+  - rank: 0
+    suit: 0
+    cardPrefab: {fileID: 0}
+  - rank: 0
+    suit: 0
+    cardPrefab: {fileID: 0}
+  - rank: 0
+    suit: 0
+    cardPrefab: {fileID: 0}
+  playerCardPosition: {fileID: 0}
+  dealerCardPosition: {fileID: 0}
+  cardSpacing: 30

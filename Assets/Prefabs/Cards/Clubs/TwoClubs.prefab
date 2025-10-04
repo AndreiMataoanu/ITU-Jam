@@ -231,6 +231,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8921347802918587518}
+  - component: {fileID: 2203439049466056650}
   m_Layer: 0
   m_Name: TwoClubs
   m_TagString: Untagged
@@ -255,3 +256,17 @@ Transform:
   - {fileID: 792367681849138864}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2203439049466056650
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7082712968241337282}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea83397618944ff4cb73cbbc332663ac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CardDisplay
+  cardBack: {fileID: 1846285599611208699}
+  cardFace: {fileID: 188463719716016275}

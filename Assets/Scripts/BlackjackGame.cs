@@ -5,9 +5,17 @@ using System.Linq;
 
 public class BlackjackGame : MonoBehaviour
 {
+    [System.Serializable]
+    public class CardVisuals
+    {
+        public Card.Rank rank;
+        public Card.Suit suit;
+        public GameObject cardPrefab;
+    }
+
     public struct Card
     {
-        public enum Rank { Ace = 1, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten, Jack, Queen, King }
+        public enum Rank { None = 0, Ace, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten, Jack, Queen, King }
         public enum Suit { Clubs, Diamonds, Hearts, Spades }
 
         public Rank rank;
@@ -44,16 +52,18 @@ public class BlackjackGame : MonoBehaviour
 
             foreach(Card.Suit s in System.Enum.GetValues(typeof(Card.Suit)))
             {
-                foreach(Card.Rank r in System.Enum.GetValues(typeof(Card.Rank)))
+                for(int r = (int)Card.Rank.Ace; r <= (int)Card.Rank.King; r++)
                 {
-                    cards.Add(new Card { rank = r, suit = s });
+                    Card.Rank rank = (Card.Rank)r;
+
+                    cards.Add(new Card { rank = rank, suit = s });
                 }
             }
         }
 
         public void Shuffle()
         {
-            //Shuffle implementation
+            //Shuffle
             int n = cards.Count;
 
             while(n > 1)
@@ -118,8 +128,10 @@ public class BlackjackGame : MonoBehaviour
     [SerializeField] private GameObject hitButton;
     [SerializeField] private GameObject standButton;
 
-    [Header("Card Prefab")]
-    [SerializeField] private GameObject cardPrefab;
+    [Header("Visual Setup")]
+    [SerializeField] private List<CardVisuals> cardPrefabs = new List<CardVisuals>();
+
+    private Dictionary<(Card.Rank, Card.Suit), GameObject> cardPrefabLookup;
 
     [SerializeField] private Transform playerCardPosition;
     [SerializeField] private Transform dealerCardPosition;
@@ -130,7 +142,24 @@ public class BlackjackGame : MonoBehaviour
     {
         gameDeck = new Deck();
 
+        InitializeCardLookup();
         StartGame();
+    }
+
+    //Initializes the card prefab lookup dictionary for quick access.
+    private void InitializeCardLookup()
+    {
+        cardPrefabLookup = new Dictionary<(Card.Rank, Card.Suit), GameObject>();
+
+        foreach(var cardVisual in cardPrefabs)
+        {
+            cardPrefabLookup.Add((cardVisual.rank, cardVisual.suit), cardVisual.cardPrefab);
+        }
+
+        if(cardPrefabLookup.Count != 52)
+        {
+            Debug.LogWarning($"Card lookup only contains {cardPrefabLookup.Count} entries. Ensure all 52 cards are assigned in the Inspector!");
+        }
     }
 
     //Calculates the total value of a hand. Aces are 1 or 11.
@@ -167,7 +196,10 @@ public class BlackjackGame : MonoBehaviour
     //Resets the game and deals cards
     public void StartGame()
     {
-        foreach(GameObject cardObject in activeCardObjects) Destroy(cardObject);
+        foreach(GameObject cardObject in activeCardObjects)
+        {
+            Destroy(cardObject);
+        }
 
         activeCardObjects.Clear();
         playerHand.Clear();
@@ -201,9 +233,17 @@ public class BlackjackGame : MonoBehaviour
     {
         Card newCardData = gameDeck.DealCard();
 
+        //temp
+        if(!cardPrefabLookup.TryGetValue((newCardData.rank, newCardData.suit), out GameObject cardPrefabToUse))
+        {
+            Debug.LogError($"Prefab not found for {newCardData.rank} of {newCardData.suit}! Dealing failed.");
+
+            return null;
+        }
+
         Vector3 positionOffset = new Vector3(hand.Count * cardSpacing, 0, 0);
 
-        GameObject cardObject = Instantiate(cardPrefab, parentTransform);
+        GameObject cardObject = Instantiate(cardPrefabToUse, parentTransform);
 
         cardObject.transform.localPosition = positionOffset;
 
@@ -211,7 +251,15 @@ public class BlackjackGame : MonoBehaviour
 
         CardDisplay cardDisplay = cardObject.GetComponent<CardDisplay>();
 
-        cardDisplay.SetCard(newCardData, isHidden);
+        //temp
+        if(cardDisplay == null)
+        {
+            Debug.LogError($"CardDisplay component missing on prefab: {cardPrefabToUse.name}!");
+
+            return null;
+        }
+
+        cardDisplay.SetHidden(isHidden);
 
         CardInstance newCardInstance = new CardInstance(newCardData, cardDisplay, isHidden);
 
@@ -287,6 +335,12 @@ public class BlackjackGame : MonoBehaviour
         if(playerHasBlackjack && dealerValue != 21)
         {
             EndGame("Blackjack! You win!");
+
+            yield break;
+        }
+        else if(playerHasBlackjack && dealerValue == 21)
+        {
+            EndGame("Both have Blackjack! It's a tie.");
 
             yield break;
         }

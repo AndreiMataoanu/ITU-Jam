@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4296880183213289334}
+  - component: {fileID: -6483379528589315846}
   m_Layer: 0
   m_Name: NineHearts
   m_TagString: Untagged
@@ -33,6 +34,20 @@ Transform:
   - {fileID: 4182897100654111068}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &-6483379528589315846
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 814675472386201839}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea83397618944ff4cb73cbbc332663ac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CardDisplay
+  cardBack: {fileID: 9172065511886389468}
+  cardFace: {fileID: 4258362723414594361}
 --- !u!1 &4258362723414594361
 GameObject:
   m_ObjectHideFlags: 0

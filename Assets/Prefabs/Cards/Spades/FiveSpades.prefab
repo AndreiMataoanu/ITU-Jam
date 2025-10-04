@@ -231,6 +231,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7086793081399046015}
+  - component: {fileID: 8281189845917080301}
   m_Layer: 0
   m_Name: FiveSpades
   m_TagString: Untagged
@@ -255,3 +256,17 @@ Transform:
   - {fileID: 4908348174319159920}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8281189845917080301
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9212619845558350961}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea83397618944ff4cb73cbbc332663ac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CardDisplay
+  cardBack: {fileID: 1561374045377699801}
+  cardFace: {fileID: 2626600703925726255}

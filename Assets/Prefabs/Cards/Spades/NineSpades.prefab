@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5354029743417137727}
+  - component: {fileID: -2954623862245461434}
   m_Layer: 0
   m_Name: NineSpades
   m_TagString: Untagged
@@ -33,6 +34,20 @@ Transform:
   - {fileID: 6423134041295330974}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &-2954623862245461434
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3671920675622605976}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea83397618944ff4cb73cbbc332663ac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CardDisplay
+  cardBack: {fileID: 4134742890785829355}
+  cardFace: {fileID: 6192411593722659512}
 --- !u!1 &4134742890785829355
 GameObject:
   m_ObjectHideFlags: 0

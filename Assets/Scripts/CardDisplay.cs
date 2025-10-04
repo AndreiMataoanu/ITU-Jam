@@ -20,9 +20,4 @@ public class CardDisplay : MonoBehaviour
 
         //flipping animation here
     }
-
-    public void SetCard(BlackjackGame.Card card, bool isHidden)
-    {
-        return;
-    }
 }
