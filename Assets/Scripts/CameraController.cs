@@ -6,6 +6,7 @@ public class CameraController : MonoBehaviour
     private float sensitivity;
     [SerializeField] private float defaultSensitivity = 60f;
     [SerializeField] private float moveSpeed = 5f;
+    [SerializeField] private GameObject powerUpManager;
 
     [SerializeField] private Transform shopShoulder;
     [SerializeField] private Transform shopElbow;
@@ -26,6 +27,9 @@ public class CameraController : MonoBehaviour
     private const float moveThreshold = 0.05f;
     private const float rotThreshold = 0.25f;
 
+    private PowerUpShop _powerUpShop;
+    private InventoryManagement _inventoryManagement;
+    
     private void Start()
     {
         targetPos = defaultPos;
@@ -34,6 +38,8 @@ public class CameraController : MonoBehaviour
         transform.localEulerAngles = defaultRot;
         sensitivity = defaultSensitivity;
         CursorLock(true);
+        _powerUpShop = powerUpManager.GetComponent<PowerUpShop>();
+        _inventoryManagement = powerUpManager.GetComponent<InventoryManagement>();
     }
 
     void Update()
@@ -58,12 +64,13 @@ public class CameraController : MonoBehaviour
         else if (!lookingAtShop && !lookingAtItemBox && Input.GetKeyDown(KeyCode.A))
         {
             EnterShop();
-            StartCoroutine("OpenShop");
+            StartCoroutine(OpenShop());
         }
         else if (lookingAtShop && Input.GetKeyDown(KeyCode.D))
         {
+            _inventoryManagement.inInventory = false;
             EnterDefault();
-            StartCoroutine("CloseShop");
+            StartCoroutine(CloseShop());
         }
 
         if (isMoving)
@@ -84,6 +91,10 @@ public class CameraController : MonoBehaviour
 
     public void EnterItemBox()
     {
+        // Inventory
+        _inventoryManagement.inInventory = true;
+        
+        // Camera
         lookingAtItemBox = true;
         targetPos = itemBoxPos;
         targetRot = Quaternion.Euler(itemBoxRot);
@@ -119,7 +130,9 @@ public class CameraController : MonoBehaviour
         shopShoulder.localEulerAngles = new Vector3(0f, 0f, 0f);
         yield return new WaitForSeconds(0.25f);
         shopElbow.localEulerAngles = new Vector3(0f, -15f, 0f);
-
+        
+        if (!_powerUpShop.hasSelected)
+            _powerUpShop.SpawnPowerUps();
     }
 
     private IEnumerator CloseShop()
