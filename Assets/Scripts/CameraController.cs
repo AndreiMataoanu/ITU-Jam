@@ -4,7 +4,7 @@ using System.Collections;
 public class CameraController : MonoBehaviour
 {
     private float sensitivity;
-    [SerializeField] private float defaultSensitivity = 120f;
+    [SerializeField] private float defaultSensitivity = 60f;
     [SerializeField] private float moveSpeed = 5f;
     [SerializeField] private GameObject powerUpManager;
 
@@ -52,6 +52,7 @@ public class CameraController : MonoBehaviour
         angles.z = 0;
         transform.eulerAngles = angles;
 
+        //move camera
         if (!lookingAtItemBox && !lookingAtShop && Input.GetKeyDown(KeyCode.D))
         {
             EnterItemBox();
