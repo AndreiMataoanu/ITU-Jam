@@ -147,8 +147,10 @@ public class BlackjackGame : MonoBehaviour
     private Coroutine currentBustCoroutine = null;
 
     //Abilities
-    private bool isKnifeAvailable = true; //rn can be used once per round
+    private bool isKnifeAvailable = true; //use once per round
     private bool isKnifeActive = false;
+    private bool isScissorsAvailable = true; //use once per round
+    private int scissorsValueReduction = 0;
 
     public int PlayerMoney
     {
@@ -212,6 +214,11 @@ public class BlackjackGame : MonoBehaviour
             if(Input.GetKeyDown(KeyCode.Alpha1) && isKnifeAvailable)
             {
                 ActivateKnife();
+            }
+
+            if(Input.GetKeyDown(KeyCode.Alpha2) && isScissorsAvailable)
+            {
+                ActivateScissors();
             }
         }
     }
@@ -296,17 +303,61 @@ public class BlackjackGame : MonoBehaviour
         Debug.Log("Knife activated!");
     }
 
+    public void ActivateScissors()
+    {
+        if(!isRoundActive || !isScissorsAvailable) return;
+
+        if(CalculateHandValue(playerHand) > 21) return;
+
+        if(dealerHand.Count < 2) return;
+
+        CardInstance visibleDealerCard = dealerHand[1];
+
+        int originalValue = visibleDealerCard.cardData.GetValue();
+        int halvedValue = Mathf.CeilToInt((float)originalValue / 2f);
+
+        scissorsValueReduction = originalValue - halvedValue;
+
+        isScissorsAvailable = false;
+
+        string originalRankText = visibleDealerCard.cardData.rank.ToString();
+        string statusUpdate = $"[Scissors] ACTIVATED! Dealer's {originalRankText} is reduced by {scissorsValueReduction} to {halvedValue}.";
+
+        statusText.text = statusText.text.Replace("Press 2 to use [Scissors] (Available)", statusUpdate);
+        statusText.text = statusText.text.Replace("Press 1 to use [Knife] (Available)", "");
+
+        UpdateUI(true);
+
+        Debug.Log($"Scissors activated! Original value: {originalValue}, Halved value (rounded up): {halvedValue}. Reduction: {scissorsValueReduction}");
+    }
+
     //Calculates the total value of a hand. Aces are 1 or 11.
     private int CalculateHandValue(List<CardInstance> hand)
     {
-        List<Card> cards = hand.Select(x => x.cardData).ToList();
+        //List<Card> cards = hand.Select(x => x.cardData).ToList();
 
         int value = 0;
         int aceCount = 0;
 
-        foreach(Card card in cards)
+        CardInstance targetedCardInstance = null;
+
+        if(scissorsValueReduction > 0 && dealerHand.Count > 1)
         {
+            targetedCardInstance = dealerHand[1];
+        }
+
+        for(int i = 0; i < hand.Count; i++)
+        {
+            CardInstance cardInstance = hand[i];
+
+            Card card = cardInstance.cardData;
+
             int cardValue = card.GetValue();
+
+            if(targetedCardInstance != null && cardInstance == targetedCardInstance)
+            {
+                cardValue -= scissorsValueReduction;
+            }
 
             if(card.rank == Card.Rank.Ace)
             {
@@ -354,8 +405,12 @@ public class BlackjackGame : MonoBehaviour
         gameDeck.Shuffle();
 
         isRoundActive = false;
+
+        //Reset abilities
         isKnifeActive = false;
         isKnifeAvailable = true;
+        isScissorsAvailable = true;
+        scissorsValueReduction = 0;
 
         //Set bet to the last valid bet
         if(currentBet > PlayerMoney)
@@ -547,6 +602,23 @@ public class BlackjackGame : MonoBehaviour
 
         DealCardToPlayer();
         UpdateUI();
+
+        string abilityStatus = "";
+
+        if(isKnifeAvailable) abilityStatus += "Press 1 to use [Knife] (Available). ";
+        if(isScissorsAvailable) abilityStatus += "Press 2 to use [Scissors] (Available).";
+
+        if(scissorsValueReduction > 0)
+        {
+            CardInstance visibleDealerCard = dealerHand[1];
+
+            int originalValue = visibleDealerCard.cardData.GetValue();
+            int halvedValue = Mathf.CeilToInt((float)originalValue / 2f);
+
+            abilityStatus = $"[Scissors] ACTIVATED! Dealer's {visibleDealerCard.cardData.rank.ToString()} is reduced by {scissorsValueReduction} to {halvedValue}.";
+        }
+
+        statusText.text = $"Round started! Bet: ${currentBet}. Your turn. Press H to Hit or S to Stand.\n{abilityStatus}";
     }
 
     public void Stand()
