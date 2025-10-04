@@ -146,6 +146,10 @@ public class BlackjackGame : MonoBehaviour
 
     private Coroutine currentBustCoroutine = null;
 
+    //Abilities
+    private bool isKnifeAvailable = true; //rn can be used once per round
+    private bool isKnifeActive = false;
+
     public int PlayerMoney
     {
         get { return playerMoney; }
@@ -182,24 +186,32 @@ public class BlackjackGame : MonoBehaviour
             {
                 IncreaseBet();
             }
+
             if(Input.GetKeyDown(KeyCode.DownArrow))
             {
                 DecreaseBet();
             }
+
             if(Input.GetKeyDown(KeyCode.Space) && dealButton.activeInHierarchy)
             {
                 Deal();
             }
         }
-        else
+        else //Handle playing actions.
         {
             if(Input.GetKeyDown(KeyCode.H) && hitButton.activeInHierarchy)
             {
                 Hit();
             }
+
             if(Input.GetKeyDown(KeyCode.S) && standButton.activeInHierarchy)
             {
                 Stand();
+            }
+
+            if(Input.GetKeyDown(KeyCode.Alpha1) && isKnifeAvailable)
+            {
+                ActivateKnife();
             }
         }
     }
@@ -272,6 +284,17 @@ public class BlackjackGame : MonoBehaviour
         UpdateBettingUI();
     }
 
+    public void ActivateKnife()
+    {
+        if(!isRoundActive || isKnifeActive || !isKnifeAvailable) return;
+
+        isKnifeActive = true;
+        isKnifeAvailable = false;
+
+        statusText.text = statusText.text.Replace("Press 1 to use [Knife] (Available)", "[Knife] ACTIVATED! Dealer is forced to stand.");
+
+        Debug.Log("Knife activated!");
+    }
 
     //Calculates the total value of a hand. Aces are 1 or 11.
     private int CalculateHandValue(List<CardInstance> hand)
@@ -331,6 +354,8 @@ public class BlackjackGame : MonoBehaviour
         gameDeck.Shuffle();
 
         isRoundActive = false;
+        isKnifeActive = false;
+        isKnifeAvailable = true;
 
         //Set bet to the last valid bet
         if(currentBet > PlayerMoney)
@@ -568,19 +593,27 @@ public class BlackjackGame : MonoBehaviour
             yield break;
         }
 
-        while(dealerValue < 17)
+        if(isKnifeActive)
         {
-            statusText.text = "Dealer hits...";
-
-            DealCardToDealer(false);
-            UpdateUI(false);
-
-            dealerValue = CalculateHandValue(dealerHand);
+            statusText.text = "Knife activated! Dealer is forced to stand.";
 
             yield return new WaitForSeconds(2f);
         }
+        else
+        {
+            while(dealerValue < 17)
+            {
+                statusText.text = "Dealer hits...";
 
-        //Show winner
+                DealCardToDealer(false);
+                UpdateUI(false);
+
+                dealerValue = CalculateHandValue(dealerHand);
+
+                yield return new WaitForSeconds(2f);
+            }
+        }
+
         string resultMessage = DetermineWinner(playerValue, dealerValue);
 
         statusText.text = $"Dealer finishes at {dealerValue}. {resultMessage}";
