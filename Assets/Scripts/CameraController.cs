@@ -16,7 +16,6 @@ public class CameraController : MonoBehaviour
 
     private bool lookingAtItemBox = false;
     private bool lookingAtShop = false;
-    private bool defaultView = true;
 
     private Vector3 targetPos;
     private Quaternion targetRot;
@@ -47,7 +46,6 @@ public class CameraController : MonoBehaviour
         if (!lookingAtItemBox && !lookingAtShop && Input.GetKeyDown(KeyCode.D))
         {
             lookingAtItemBox = true;
-            defaultView = false;
             targetPos = itemBoxPos;
             targetRot = Quaternion.Euler(itemBoxRot);
             sensitivity = 30f;
@@ -57,7 +55,6 @@ public class CameraController : MonoBehaviour
         else if (lookingAtItemBox && Input.GetKeyDown(KeyCode.A))
         {
             lookingAtItemBox = false;
-            defaultView = true;
             targetPos = defaultPos;
             targetRot = Quaternion.Euler(defaultRot);
             sensitivity = defaultSensitivity;
@@ -67,7 +64,6 @@ public class CameraController : MonoBehaviour
         else if (!lookingAtShop && !lookingAtItemBox && Input.GetKeyDown(KeyCode.A))
         {
             lookingAtShop = true;
-            defaultView = false;
             targetPos = shopPos;
             targetRot = Quaternion.Euler(shopRot);
             sensitivity = 30f;
@@ -77,7 +73,6 @@ public class CameraController : MonoBehaviour
         else if (lookingAtShop && Input.GetKeyDown(KeyCode.D))
         {
             lookingAtShop = false;
-            defaultView = true;
             targetPos = defaultPos;
             targetRot = Quaternion.Euler(defaultRot);
             sensitivity = defaultSensitivity;
