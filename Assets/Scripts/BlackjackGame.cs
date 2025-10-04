@@ -159,7 +159,7 @@ public class BlackjackGame : MonoBehaviour
     [SerializeField] private Transform dealerCardPosition;
 
     [SerializeField] private float cardSpacing = 30.0f;
-    private const float zOverlap = 0.05f;
+    private const float zOverlap = 0.01f;
 
     private void Start()
     {
@@ -168,6 +168,36 @@ public class BlackjackGame : MonoBehaviour
         InitializeCardLookup();
 
         StartGame();
+    }
+
+    private void Update()
+    {
+        if(!isRoundActive)
+        {
+            if(Input.GetKeyDown(KeyCode.UpArrow))
+            {
+                IncreaseBet();
+            }
+            if(Input.GetKeyDown(KeyCode.DownArrow))
+            {
+                DecreaseBet();
+            }
+            if(Input.GetKeyDown(KeyCode.Space) && dealButton.activeInHierarchy)
+            {
+                Deal();
+            }
+        }
+        else
+        {
+            if(Input.GetKeyDown(KeyCode.H) && hitButton.activeInHierarchy)
+            {
+                Hit();
+            }
+            if(Input.GetKeyDown(KeyCode.S) && standButton.activeInHierarchy)
+            {
+                Stand();
+            }
+        }
     }
 
     private void ClearTable()
