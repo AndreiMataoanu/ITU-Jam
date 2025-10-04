@@ -6,7 +6,8 @@ public class CameraController : MonoBehaviour
     private float sensitivity;
     [SerializeField] private float defaultSensitivity = 120f;
     [SerializeField] private float moveSpeed = 5f;
-
+    [SerializeField] private GameObject powerUpManager;
+    
     private Vector3 defaultRot = new Vector3(20f, -60f, 0f);
     private Vector3 defaultPos = new Vector3(0f, -0.5f, 0.5f);
     private Vector3 itemBoxRot = new Vector3(20f, -60f, 0f); //rotation when looking at item box
@@ -23,6 +24,9 @@ public class CameraController : MonoBehaviour
     private const float moveThreshold = 0.05f;
     private const float rotThreshold = 0.25f;
 
+    private PowerUpShop _powerUpShop;
+    private InventoryManagement _inventoryManagement;
+    
     private void Start()
     {
         targetPos = defaultPos;
@@ -31,6 +35,8 @@ public class CameraController : MonoBehaviour
         transform.localEulerAngles = defaultRot;
         sensitivity = defaultSensitivity;
         CursorLock(true);
+        _powerUpShop = powerUpManager.GetComponent<PowerUpShop>();
+        _inventoryManagement = powerUpManager.GetComponent<InventoryManagement>();
     }
 
     void Update()
@@ -57,6 +63,7 @@ public class CameraController : MonoBehaviour
         }
         else if (lookingAtShop && Input.GetKeyDown(KeyCode.D))
         {
+            _powerUpShop.DestroyPowerUps();
             EnterDefault();
         }
 
@@ -78,6 +85,10 @@ public class CameraController : MonoBehaviour
 
     public void EnterItemBox()
     {
+        // Inventory
+        _inventoryManagement.inInventory = true;
+        
+        // Camera
         lookingAtItemBox = true;
         targetPos = itemBoxPos;
         targetRot = Quaternion.Euler(itemBoxRot);
@@ -88,6 +99,11 @@ public class CameraController : MonoBehaviour
     
     public void EnterShop()
     {
+        // Shop
+        _inventoryManagement.inInventory = false;
+        _powerUpShop.SpawnPowerUps();
+        
+        // Camera
         lookingAtShop = true;
         targetPos = shopPos;
         targetRot = Quaternion.Euler(shopRot);

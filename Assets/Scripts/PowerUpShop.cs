@@ -32,30 +32,25 @@ public class PowerUpShop : MonoBehaviour
             Debug.Log("Not enough power up prefabs added!");
     }
 
-    void Start()
-    {
-        SpawnPowerUps();
-    }
-
     void Update()
     {
         HighlightPowerUp();
         SelectPowerUp();
     }
 
-    private void SpawnPowerUps()
+    public void SpawnPowerUps()
     {
         if (powerUpPrefabs == null || powerUpPrefabs.Count() < powerUpCount) return;
         
         for (int i = 0; i < powerUpCount; i++)
         {
             int randomIndex = Random.Range(0, powerUpPrefabs.Length);
-            Vector3 prefabPosition = transform.position + Vector3.up * i * spaceOffset;
+            Vector3 prefabPosition = transform.position + Vector3.up * (i * spaceOffset);
             Instantiate(powerUpPrefabs[randomIndex], prefabPosition, Quaternion.identity, transform);
         }
     }
 
-    private void DestroyPowerUps()
+    public void DestroyPowerUps()
     {
         for (int i = 0; i < powerUpCount - 1; i++)
         {
@@ -111,16 +106,8 @@ public class PowerUpShop : MonoBehaviour
 
                 BuySelectedPowerUp();
                 // TODO: After buying, change camera direction
-
-                StartCoroutine(DestroyPowerUpsCoroutine());
             }
         }
-    }
-
-    IEnumerator DestroyPowerUpsCoroutine()
-    {
-        yield return new WaitForSeconds(disappearTime);
-        DestroyPowerUps();
     }
 
     private void BuySelectedPowerUp()
