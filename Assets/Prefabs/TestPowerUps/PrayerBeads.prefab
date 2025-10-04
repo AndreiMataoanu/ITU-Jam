@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 8564010315326186619}
   - component: {fileID: 5815275414431461932}
   - component: {fileID: 8722225461901319486}
+  - component: {fileID: 8973900680638308900}
   m_Layer: 0
   m_Name: PrayerBeads
   m_TagString: Selectable
@@ -111,3 +112,17 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.5
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &8973900680638308900
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5018282671496741563}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8b4b69a41c3e6634587c1021a34ba729, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PowerUpInfo
+  isSelected: 0
+  price: 40

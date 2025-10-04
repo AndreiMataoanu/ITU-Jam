@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -13,20 +14,27 @@ public class PowerUpShop : MonoBehaviour
     [Header("Power Up Selection")]
     [SerializeField] private Color outlineColor = new Color(0.4f, 0.0f, 0.7f);
     [SerializeField] private float outlineWidth = 5.0f;
+    [SerializeField] private float disappearTime = 1.0f;
 
     private Transform _highlight;
     private Transform _selection;
     private RaycastHit _raycastHit;
+    private bool _hasSelected;
+    private MoneyManagement _moneyManagement;
+    private InventoryManagement _inventoryManagement;
     
     private void Awake()
     {
+        _moneyManagement = GetComponent<MoneyManagement>();
+        _inventoryManagement = GetComponent<InventoryManagement>();
+        
         if (powerUpPrefabs == null || powerUpPrefabs.Count() < powerUpCount)
             Debug.Log("Not enough power up prefabs added!");
     }
 
     void Start()
     {
-        SpawnPowerUp();
+        SpawnPowerUps();
     }
 
     void Update()
@@ -35,7 +43,7 @@ public class PowerUpShop : MonoBehaviour
         SelectPowerUp();
     }
 
-    private void SpawnPowerUp()
+    private void SpawnPowerUps()
     {
         if (powerUpPrefabs == null || powerUpPrefabs.Count() < powerUpCount) return;
         
@@ -47,8 +55,20 @@ public class PowerUpShop : MonoBehaviour
         }
     }
 
+    private void DestroyPowerUps()
+    {
+        for (int i = 0; i < powerUpCount - 1; i++)
+        {
+            GameObject powerUp = gameObject.transform.GetChild(i).gameObject;
+            if (!powerUp.GetComponent<PowerUpInfo>().isSelected)
+                Destroy(powerUp);
+        }
+    }
+
     private void HighlightPowerUp()
     {
+        if (_hasSelected) return;
+        
         if (_highlight)
         {
             _highlight.gameObject.GetComponent<Outline>().enabled = false;
@@ -79,26 +99,35 @@ public class PowerUpShop : MonoBehaviour
 
     private void SelectPowerUp()
     {
-        if (Mouse.current.leftButton.wasPressedThisFrame)
+        if (!_hasSelected && Mouse.current.leftButton.wasPressedThisFrame)
         {
             if (_highlight)
             {
-                if (_selection)
-                    _selection.gameObject.GetComponent<Outline>().enabled = false;
-
                 _selection = _raycastHit.transform;
                 _selection.gameObject.GetComponent<Outline>().enabled = true;
                 _highlight = null;
-                
-            }
-            else
-            {
-                if (_selection)
-                {
-                    _selection.GetComponent<Outline>().enabled = false;
-                    _selection = null;
-                }
+                _hasSelected = true;
+
+                BuySelectedPowerUp();
+                // TODO: After buying, change camera direction
+
+                StartCoroutine(DestroyPowerUpsCoroutine());
             }
         }
+    }
+
+    IEnumerator DestroyPowerUpsCoroutine()
+    {
+        yield return new WaitForSeconds(disappearTime);
+        DestroyPowerUps();
+    }
+
+    private void BuySelectedPowerUp()
+    {
+        var selectionInfo = _selection.gameObject.GetComponent<PowerUpInfo>();
+        selectionInfo.isSelected = true;
+                
+        if (_inventoryManagement.AddItem(_selection.gameObject))
+            _moneyManagement.LoseAmount(selectionInfo.price);
     }
 }

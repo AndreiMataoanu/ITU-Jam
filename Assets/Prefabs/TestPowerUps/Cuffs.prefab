@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 2662926664145633523}
   - component: {fileID: 8815112065296885044}
   - component: {fileID: 855377131972540392}
+  - component: {fileID: 2693189136459581633}
   m_Layer: 0
   m_Name: Cuffs
   m_TagString: Selectable
@@ -113,3 +114,17 @@ CapsuleCollider:
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &2693189136459581633
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8224986128605362163}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8b4b69a41c3e6634587c1021a34ba729, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PowerUpInfo
+  isSelected: 0
+  price: 10
