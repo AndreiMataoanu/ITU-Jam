@@ -30,7 +30,7 @@ public class PowerUpShop : MonoBehaviour
         for (int i = 0; i < powerUpCount; i++)
         {
             int randomIndex = Random.Range(0, powerUpPrefabs.Length);
-            Vector3 prefabPosition = transform.position + Vector3.right * i * spaceOffset;
+            Vector3 prefabPosition = transform.position + Vector3.up * i * spaceOffset;
             Instantiate(powerUpPrefabs[randomIndex], prefabPosition, Quaternion.identity, transform);
         }
     }
