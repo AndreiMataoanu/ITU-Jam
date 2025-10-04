@@ -137,6 +137,7 @@ public class BlackjackGame : MonoBehaviour
     [SerializeField] private Transform dealerCardPosition;
 
     [SerializeField] private float cardSpacing = 30.0f;
+    private const float zOverlap = 0.05f;
 
     private void Start()
     {
@@ -153,7 +154,10 @@ public class BlackjackGame : MonoBehaviour
 
         foreach(var cardVisual in cardPrefabs)
         {
-            cardPrefabLookup.Add((cardVisual.rank, cardVisual.suit), cardVisual.cardPrefab);
+            if(cardVisual.rank != Card.Rank.None)
+            {
+                cardPrefabLookup.Add((cardVisual.rank, cardVisual.suit), cardVisual.cardPrefab);
+            }
         }
 
         if(cardPrefabLookup.Count != 52)
@@ -228,6 +232,39 @@ public class BlackjackGame : MonoBehaviour
         }
     }
 
+    private void UpdateHandVisuals(List<CardInstance> hand)
+    {
+        int count = hand.Count;
+
+        if(count < 2)
+        {
+            if(count == 1)
+            {
+                hand[0].displayComponent.transform.localPosition = new Vector3(0f, 0, 0f);
+            }
+
+            return;
+        }
+
+        float anchorPos1X = 0f;
+        float anchorPos2X = cardSpacing;
+        float zPosCard2 = 2 * zOverlap;
+        float zPosCard1 = 1 * zOverlap;
+
+        hand[count - 1].displayComponent.transform.localPosition = new Vector3(anchorPos2X, 0, zPosCard2);
+        hand[count - 2].displayComponent.transform.localPosition = new Vector3(anchorPos1X, 0, zPosCard1);
+
+        for(int i = 0; i < count - 2; i++)
+        {
+            CardInstance card = hand[i];
+
+            float xPos = (i + 1) * -cardSpacing;
+            float zPos = i * -zOverlap;
+
+            card.displayComponent.transform.localPosition = new Vector3(xPos, 0, zPos);
+        }
+    }
+
     //Instantiates a card, sets its data, and adds it to the specified hand.
     private CardInstance DealCardInstance(List<CardInstance> hand, Transform parentTransform, bool isHidden)
     {
@@ -241,11 +278,7 @@ public class BlackjackGame : MonoBehaviour
             return null;
         }
 
-        Vector3 positionOffset = new Vector3(hand.Count * cardSpacing, 0, 0);
-
         GameObject cardObject = Instantiate(cardPrefabToUse, parentTransform);
-
-        cardObject.transform.localPosition = positionOffset;
 
         activeCardObjects.Add(cardObject);
 
@@ -263,7 +296,9 @@ public class BlackjackGame : MonoBehaviour
 
         CardInstance newCardInstance = new CardInstance(newCardData, cardDisplay, isHidden);
 
-        hand.Add(newCardInstance);
+        hand.Insert(0, newCardInstance);
+
+        UpdateHandVisuals(hand);
 
         return newCardInstance;
     }
@@ -325,6 +360,7 @@ public class BlackjackGame : MonoBehaviour
             hiddenCard.displayComponent.SetHidden(false);
 
             UpdateUI(false);
+            UpdateHandVisuals(dealerHand);
 
             yield return new WaitForSeconds(1.0f);
         }
