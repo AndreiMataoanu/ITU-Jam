@@ -13,7 +13,7 @@ public class BlackjackGame : MonoBehaviour
         public Rank rank;
         public Suit suit;
 
-        //Calculates the numerical value of the card (Ace is 11 by default, faces are 10)
+        //Calculates the numerical value of the card (Ace = 11, J/Q/K Faces = 10)
         public int GetValue()
         {
             if(rank >= Rank.Ten && rank <= Rank.King) return 10;
@@ -88,17 +88,43 @@ public class BlackjackGame : MonoBehaviour
         }
     }
 
+    public class CardInstance
+    {
+        public Card cardData;
+
+        public CardDisplay displayComponent;
+
+        public bool isHidden;
+
+        public CardInstance(Card card, CardDisplay display, bool hidden = false)
+        {
+            cardData = card;
+            displayComponent = display;
+            isHidden = hidden;
+        }
+    }
+
     private Deck gameDeck;
 
-    private List<Card> playerHand = new List<Card>();
-    private List<Card> dealerHand = new List<Card>();
+    private List<CardInstance> playerHand = new List<CardInstance>();
+    private List<CardInstance> dealerHand = new List<CardInstance>();
+    private List<GameObject> activeCardObjects = new List<GameObject>();
 
     [Header("UI")]
-    public TMPro.TextMeshProUGUI playerScoreText;
-    public TMPro.TextMeshProUGUI dealerScoreText;
-    public TMPro.TextMeshProUGUI statusText;
-    public GameObject hitButton;
-    public GameObject standButton;
+    [SerializeField] private TMPro.TextMeshProUGUI playerScoreText;
+    [SerializeField] private TMPro.TextMeshProUGUI dealerScoreText;
+    [SerializeField] private TMPro.TextMeshProUGUI statusText;
+
+    [SerializeField] private GameObject hitButton;
+    [SerializeField] private GameObject standButton;
+
+    [Header("Card Prefab")]
+    [SerializeField] private GameObject cardPrefab;
+
+    [SerializeField] private Transform playerCardPosition;
+    [SerializeField] private Transform dealerCardPosition;
+
+    [SerializeField] private float cardSpacing = 30.0f;
 
     private void Start()
     {
@@ -108,12 +134,15 @@ public class BlackjackGame : MonoBehaviour
     }
 
     //Calculates the total value of a hand. Aces are 1 or 11.
-    private int CalculateHandValue(List<Card> hand)
+    private int CalculateHandValue(List<CardInstance> hand)
     {
+        //convert CardInstance list to Card list for easier processing.
+        List<Card> cards = hand.Select(x => x.cardData).ToList();
+        
         int value = 0;
         int aceCount = 0;
 
-        foreach(Card card in hand)
+        foreach(Card card in cards)
         {
             int cardValue = card.GetValue();
 
@@ -138,6 +167,9 @@ public class BlackjackGame : MonoBehaviour
     //Resets the game and deals cards
     public void StartGame()
     {
+        foreach(GameObject cardObject in activeCardObjects) Destroy(cardObject);
+
+        activeCardObjects.Clear();
         playerHand.Clear();
         dealerHand.Clear();
         gameDeck.Shuffle();
@@ -160,26 +192,42 @@ public class BlackjackGame : MonoBehaviour
     {
         if(CalculateHandValue(playerHand) == 21)
         {
-            DealerTurn(true);
+            StartCoroutine(DealerTurnCoroutine(true));
         }
+    }
+
+    //Instantiates a card, sets its data, and adds it to the specified hand.
+    private CardInstance DealCardInstance(List<CardInstance> hand, Transform parentTransform, bool isHidden)
+    {
+        Card newCardData = gameDeck.DealCard();
+
+        Vector3 positionOffset = new Vector3(hand.Count * cardSpacing, 0, 0);
+
+        GameObject cardObject = Instantiate(cardPrefab, parentTransform);
+
+        cardObject.transform.localPosition = positionOffset;
+
+        activeCardObjects.Add(cardObject);
+
+        CardDisplay cardDisplay = cardObject.GetComponent<CardDisplay>();
+
+        cardDisplay.SetCard(newCardData, isHidden);
+
+        CardInstance newCardInstance = new CardInstance(newCardData, cardDisplay, isHidden);
+
+        hand.Add(newCardInstance);
+
+        return newCardInstance;
     }
 
     private void DealCardToPlayer()
     {
-        Card newCard = gameDeck.DealCard();
-
-        playerHand.Add(newCard);
-
-        Debug.Log($"Player received: {newCard}");
+        DealCardInstance(playerHand, playerCardPosition, false);
     }
 
     private void DealCardToDealer(bool isHidden)
     {
-        Card newCard = gameDeck.DealCard();
-
-        dealerHand.Add(newCard);
-
-        Debug.Log($"Dealer received: {(isHidden ? "Hidden Card" : newCard.ToString())}");
+        DealCardInstance(dealerHand, dealerCardPosition, isHidden);
     }
 
     //Updates the score and checks for busts.
@@ -191,8 +239,8 @@ public class BlackjackGame : MonoBehaviour
 
         //Show only the value of the dealer's visible cards
         int dealerVisibleValue = dealerHidden && dealerHand.Count > 1
-            ? CalculateHandValue(dealerHand.Take(1).ToList())
-            : CalculateHandValue(dealerHand);
+            ? CalculateHandValue(dealerHand.Where(x => !x.isHidden).ToList()) //Calculate only visible cards
+            : CalculateHandValue(dealerHand); //Calculate all cards
 
         dealerScoreText.text = $"Dealer Score: {(dealerHidden && dealerHand.Count > 1 ? $"{dealerVisibleValue} + ?" : dealerVisibleValue.ToString())}";
 
@@ -215,13 +263,23 @@ public class BlackjackGame : MonoBehaviour
         hitButton.SetActive(false);
         standButton.SetActive(false);
 
-        DealerTurn();
+        StartCoroutine(DealerTurnCoroutine());
     }
 
-    private void DealerTurn(bool playerHasBlackjack = false)
+    private IEnumerator DealerTurnCoroutine(bool playerHasBlackjack = false)
     {
-        //Reveal the hidden card
-        UpdateUI(false);
+        //Reveals the dealers hidden card.
+        CardInstance hiddenCard = dealerHand.FirstOrDefault(x => x.isHidden);
+
+        if(hiddenCard != null)
+        {
+            hiddenCard.isHidden = false;
+            hiddenCard.displayComponent.SetHidden(false);
+
+            UpdateUI(false);
+
+            yield return new WaitForSeconds(1.0f);
+        }
 
         int dealerValue = CalculateHandValue(dealerHand);
         int playerValue = CalculateHandValue(playerHand);
@@ -230,22 +288,13 @@ public class BlackjackGame : MonoBehaviour
         {
             EndGame("Blackjack! You win!");
 
-            return;
+            yield break;
         }
-
-        //Dealer hits until their score is 17 or greater
-        StartCoroutine(DealerPlayCoroutine());
-    }
-
-    private IEnumerator DealerPlayCoroutine()
-    {
-        int dealerValue = CalculateHandValue(dealerHand);
-        int playerValue = CalculateHandValue(playerHand);
-
-        yield return new WaitForSeconds(1.0f);
 
         while(dealerValue < 17)
         {
+            statusText.text = "Dealer hits...";
+
             DealCardToDealer(false);
             UpdateUI(false);
 
