@@ -28,7 +28,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -49,6 +49,11 @@ MonoBehaviour:
   statusText: {fileID: 0}
   hitButton: {fileID: 0}
   standButton: {fileID: 0}
+  moneyText: {fileID: 0}
+  betText: {fileID: 0}
+  betUpButton: {fileID: 0}
+  betDownButton: {fileID: 0}
+  dealButton: {fileID: 0}
   cardPrefabs:
   - rank: 1
     suit: 0
@@ -125,87 +130,87 @@ MonoBehaviour:
   - rank: 12
     suit: 1
     cardPrefab: {fileID: 2329265860390348110, guid: 5e134af57065a1d428ec5a69c16bf994, type: 3}
-  - rank: 0
-    suit: 0
-    cardPrefab: {fileID: 0}
-  - rank: 0
-    suit: 0
-    cardPrefab: {fileID: 0}
-  - rank: 0
-    suit: 0
-    cardPrefab: {fileID: 0}
-  - rank: 0
-    suit: 0
-    cardPrefab: {fileID: 0}
-  - rank: 0
-    suit: 0
-    cardPrefab: {fileID: 0}
-  - rank: 0
-    suit: 0
-    cardPrefab: {fileID: 0}
-  - rank: 0
-    suit: 0
-    cardPrefab: {fileID: 0}
-  - rank: 0
-    suit: 0
-    cardPrefab: {fileID: 0}
-  - rank: 0
-    suit: 0
-    cardPrefab: {fileID: 0}
-  - rank: 0
-    suit: 0
-    cardPrefab: {fileID: 0}
-  - rank: 0
-    suit: 0
-    cardPrefab: {fileID: 0}
-  - rank: 0
-    suit: 0
-    cardPrefab: {fileID: 0}
-  - rank: 0
-    suit: 0
-    cardPrefab: {fileID: 0}
-  - rank: 0
-    suit: 0
-    cardPrefab: {fileID: 0}
-  - rank: 0
-    suit: 0
-    cardPrefab: {fileID: 0}
-  - rank: 0
-    suit: 0
-    cardPrefab: {fileID: 0}
-  - rank: 0
-    suit: 0
-    cardPrefab: {fileID: 0}
-  - rank: 0
-    suit: 0
-    cardPrefab: {fileID: 0}
-  - rank: 0
-    suit: 0
-    cardPrefab: {fileID: 0}
-  - rank: 0
-    suit: 0
-    cardPrefab: {fileID: 0}
-  - rank: 0
-    suit: 0
-    cardPrefab: {fileID: 0}
-  - rank: 0
-    suit: 0
-    cardPrefab: {fileID: 0}
-  - rank: 0
-    suit: 0
-    cardPrefab: {fileID: 0}
-  - rank: 0
-    suit: 0
-    cardPrefab: {fileID: 0}
-  - rank: 0
-    suit: 0
-    cardPrefab: {fileID: 0}
-  - rank: 0
-    suit: 0
-    cardPrefab: {fileID: 0}
-  - rank: 0
-    suit: 0
-    cardPrefab: {fileID: 0}
+  - rank: 13
+    suit: 1
+    cardPrefab: {fileID: 1879694623731606516, guid: 7e863225eb20abc4ca581aa007dd2c15, type: 3}
+  - rank: 1
+    suit: 2
+    cardPrefab: {fileID: 6293517785715495983, guid: 0d371c068713b874687d23627e8d7a34, type: 3}
+  - rank: 2
+    suit: 2
+    cardPrefab: {fileID: 6489160945008431729, guid: 671edd39a19b1b047a7ac7a8929d1b53, type: 3}
+  - rank: 3
+    suit: 2
+    cardPrefab: {fileID: 649946361454162825, guid: 4fefb48a38364a348bc19ad88f6e0aa0, type: 3}
+  - rank: 4
+    suit: 2
+    cardPrefab: {fileID: 2916430925890284878, guid: f9f56488e5b52004aae2c2c7dc16d43c, type: 3}
+  - rank: 5
+    suit: 2
+    cardPrefab: {fileID: 9077652607131417639, guid: ddbdb717e24feb648870657238a2877a, type: 3}
+  - rank: 6
+    suit: 2
+    cardPrefab: {fileID: 2379919351570158876, guid: f52086d6a3d765943a2a9104f2ed2b71, type: 3}
+  - rank: 7
+    suit: 2
+    cardPrefab: {fileID: 4439659880138703847, guid: e722273d5ffdff648a8ec5ef69f08a20, type: 3}
+  - rank: 8
+    suit: 2
+    cardPrefab: {fileID: 3459597791865144632, guid: 13d554b732f01234ab2a2ecef6985c06, type: 3}
+  - rank: 9
+    suit: 2
+    cardPrefab: {fileID: 814675472386201839, guid: 8739c96399a4e36469f2dc2824ce6d39, type: 3}
+  - rank: 10
+    suit: 2
+    cardPrefab: {fileID: 6018031410568303633, guid: b843e113ec12ccd4982ed91c474d32cc, type: 3}
+  - rank: 11
+    suit: 2
+    cardPrefab: {fileID: 695817934640022236, guid: 088bb59c89415924082bb304d66ddf70, type: 3}
+  - rank: 12
+    suit: 2
+    cardPrefab: {fileID: 5077434882089670447, guid: ada86bbd80ff9ec41ab22be39d99ab86, type: 3}
+  - rank: 13
+    suit: 2
+    cardPrefab: {fileID: 8755449697942899122, guid: 07f59d6a53462db4eb81628d2e5a0a8f, type: 3}
+  - rank: 1
+    suit: 3
+    cardPrefab: {fileID: 4028279679891602574, guid: 3be3d050a3ec4e54cb130fc9d0cc990c, type: 3}
+  - rank: 2
+    suit: 3
+    cardPrefab: {fileID: 8011746629776704590, guid: cfb447209502aa54c8facb80a910b96e, type: 3}
+  - rank: 3
+    suit: 3
+    cardPrefab: {fileID: 2837257701386360292, guid: 4ae08816d589b5249ba36bad96d07acc, type: 3}
+  - rank: 4
+    suit: 3
+    cardPrefab: {fileID: 3575467985725641523, guid: 5fb847ee0e8cab3498db544a16e0ecde, type: 3}
+  - rank: 5
+    suit: 3
+    cardPrefab: {fileID: 9212619845558350961, guid: 601bd936861048a46af21cebca392a42, type: 3}
+  - rank: 6
+    suit: 3
+    cardPrefab: {fileID: 8964672742077418680, guid: c8b06c3dbc415de499d7c6703551e997, type: 3}
+  - rank: 7
+    suit: 3
+    cardPrefab: {fileID: 3906917697304744390, guid: e0ab2070b6d11cf479c0efaceeab455b, type: 3}
+  - rank: 8
+    suit: 3
+    cardPrefab: {fileID: 1875143444986715519, guid: 1818a8a25fbd8e341aa474fb40d09b08, type: 3}
+  - rank: 9
+    suit: 3
+    cardPrefab: {fileID: 3671920675622605976, guid: 8ebbecf1d6b4d724b95e8148d3fc9310, type: 3}
+  - rank: 10
+    suit: 3
+    cardPrefab: {fileID: 3042023310830249012, guid: 410f034a86d558f4e9a6b8ad05e8f8df, type: 3}
+  - rank: 11
+    suit: 3
+    cardPrefab: {fileID: 8327936131310206224, guid: 83b731a5a40098b4fa8915bf20849e38, type: 3}
+  - rank: 12
+    suit: 3
+    cardPrefab: {fileID: 8821153986261758473, guid: 936225a5485421a40926dcb77283176d, type: 3}
+  - rank: 13
+    suit: 3
+    cardPrefab: {fileID: 7390946069232093434, guid: 2e583a1d31df3c749b4ed82b56da9c3f, type: 3}
   playerCardPosition: {fileID: 0}
   dealerCardPosition: {fileID: 0}
-  cardSpacing: 30
+  cardSpacing: 0.5
