@@ -427,11 +427,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e26a2745bd58944daae4adcfc3dde04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PowerUpShop
+  spaceOffset: 3
   powerUpCount: 3
   powerUpPrefabs:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 8224986128605362163, guid: 4a8768af97a8e404581dde384850f227, type: 3}
+  - {fileID: 3028148127703228018, guid: 6f190f7d4f43386499ff713f18cfcdb8, type: 3}
+  - {fileID: 350394636145776360, guid: 26311cadca51342468cc2c7ebee48b7e, type: 3}
+  - {fileID: 5018282671496741563, guid: b78cfe389c593454c81d4ee1d8523cdc, type: 3}
+  - {fileID: 7723194947337648236, guid: a172e2874f255854b946352a647fe220, type: 3}
+  - {fileID: 981487110158306035, guid: 2ae1700d0e2bf144c920d944d54520d9, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
