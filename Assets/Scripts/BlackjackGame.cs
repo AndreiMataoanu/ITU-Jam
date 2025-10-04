@@ -166,20 +166,40 @@ public class BlackjackGame : MonoBehaviour
         gameDeck = new Deck();
 
         InitializeCardLookup();
+
         StartGame();
     }
 
+    private void ClearTable()
+    {
+        foreach(GameObject cardObject in activeCardObjects)
+        {
+            if(cardObject != null)
+            {
+                Destroy(cardObject);
+            }
+        }
+
+        activeCardObjects.Clear();
+        playerHand.Clear();
+        dealerHand.Clear();
+
+        Debug.Log("Table cleared: Card objects destroyed, hands and object references reset.");
+    }
+
+    //Helper function to update all betting related text and button states
     private void UpdateBettingUI()
     {
         moneyText.text = $"Money: ${PlayerMoney}";
         betText.text = $"Current Bet: ${currentBet}";
 
-        bool canBetUp = !isRoundActive && currentBet < PlayerMoney;
-        betUpButton.SetActive(canBetUp);
+        bool isBetUpActive = !isRoundActive && (PlayerMoney >= currentBet + betStep);
 
-        bool canBetDown = !isRoundActive && currentBet > minBet;
-        betDownButton.SetActive(canBetDown);
+        betUpButton.SetActive(isBetUpActive);
 
+        bool isBetDownActive = !isRoundActive && currentBet > minBet;
+
+        betDownButton.SetActive(isBetDownActive);
         dealButton.SetActive(!isRoundActive && currentBet >= minBet && PlayerMoney >= currentBet);
     }
 
@@ -218,31 +238,12 @@ public class BlackjackGame : MonoBehaviour
         UpdateBettingUI();
     }
 
-    //Initializes the card prefab lookup dictionary for quick access.
-    private void InitializeCardLookup()
-    {
-        cardPrefabLookup = new Dictionary<(Card.Rank, Card.Suit), GameObject>();
-
-        foreach(var cardVisual in cardPrefabs)
-        {
-            if(cardVisual.rank != Card.Rank.None)
-            {
-                cardPrefabLookup.Add((cardVisual.rank, cardVisual.suit), cardVisual.cardPrefab);
-            }
-        }
-
-        if(cardPrefabLookup.Count != 52)
-        {
-            Debug.LogWarning($"Card lookup only contains {cardPrefabLookup.Count} entries. Ensure all 52 cards are assigned in the Inspector!");
-        }
-    }
 
     //Calculates the total value of a hand. Aces are 1 or 11.
     private int CalculateHandValue(List<CardInstance> hand)
     {
-        //convert CardInstance list to Card list for easier processing.
         List<Card> cards = hand.Select(x => x.cardData).ToList();
-        
+
         int value = 0;
         int aceCount = 0;
 
@@ -268,19 +269,27 @@ public class BlackjackGame : MonoBehaviour
         return value;
     }
 
-    private void ClearTable()
+    //Initializes the card prefab lookup dictionary for quick access.
+    private void InitializeCardLookup()
     {
-        foreach(GameObject cardObject in activeCardObjects)
+        cardPrefabLookup = new Dictionary<(Card.Rank, Card.Suit), GameObject>();
+
+        foreach(var cardVisual in cardPrefabs)
         {
-            Destroy(cardObject);
+            if(cardVisual.rank != Card.Rank.None)
+            {
+                cardPrefabLookup.Add((cardVisual.rank, cardVisual.suit), cardVisual.cardPrefab);
+            }
         }
 
-        activeCardObjects.Clear();
-        playerHand.Clear();
-        dealerHand.Clear();
+        if(cardPrefabLookup.Count != 52)
+        {
+            Debug.LogWarning($"Card lookup only contains {cardPrefabLookup.Count} entries. Ensure all 52 cards are assigned in the Inspector!");
+        }
     }
 
-    //Resets the game and deals cards
+
+    //Resets the game and enters the betting phase
     public void StartGame()
     {
         ClearTable();
@@ -289,6 +298,7 @@ public class BlackjackGame : MonoBehaviour
 
         isRoundActive = false;
 
+        //Set bet to the last valid bet
         if(currentBet > PlayerMoney)
         {
             currentBet = PlayerMoney;
@@ -310,6 +320,7 @@ public class BlackjackGame : MonoBehaviour
         hitButton.SetActive(false);
         standButton.SetActive(false);
 
+        //Final check if player is broke
         if(PlayerMoney < minBet)
         {
             betUpButton.SetActive(false);
@@ -318,6 +329,7 @@ public class BlackjackGame : MonoBehaviour
         }
     }
 
+    //Locks the bet and starts the round
     public void Deal()
     {
         if(isRoundActive || currentBet < minBet || PlayerMoney < currentBet) return;
@@ -327,7 +339,6 @@ public class BlackjackGame : MonoBehaviour
         betUpButton.SetActive(false);
         betDownButton.SetActive(false);
         dealButton.SetActive(false);
-        gameDeck.Shuffle();
 
         DealCardToPlayer();
         DealCardToDealer(false); //Dealers first card is visible
@@ -342,6 +353,7 @@ public class BlackjackGame : MonoBehaviour
 
         CheckBlackjack();
     }
+
 
     private void CheckBlackjack()
     {
@@ -360,6 +372,7 @@ public class BlackjackGame : MonoBehaviour
             if(count == 1)
             {
                 hand[0].displayComponent.transform.localPosition = new Vector3(0f, 0, 0f);
+                hand[0].displayComponent.transform.localRotation = Quaternion.identity;
             }
 
             return;
@@ -367,11 +380,14 @@ public class BlackjackGame : MonoBehaviour
 
         float anchorPos1X = 0f;
         float anchorPos2X = cardSpacing;
-        float zPosCard2 = 2 * zOverlap;
-        float zPosCard1 = 1 * zOverlap;
 
+        float zPosCard2 = 2 * zOverlap;
         hand[count - 1].displayComponent.transform.localPosition = new Vector3(anchorPos2X, 0, zPosCard2);
+        hand[count - 1].displayComponent.transform.localRotation = Quaternion.identity;
+
+        float zPosCard1 = 1 * zOverlap;
         hand[count - 2].displayComponent.transform.localPosition = new Vector3(anchorPos1X, 0, zPosCard1);
+        hand[count - 2].displayComponent.transform.localRotation = Quaternion.identity;
 
         for(int i = 0; i < count - 2; i++)
         {
@@ -381,6 +397,7 @@ public class BlackjackGame : MonoBehaviour
             float zPos = i * -zOverlap;
 
             card.displayComponent.transform.localPosition = new Vector3(xPos, 0, zPos);
+            card.displayComponent.transform.localRotation = Quaternion.identity;
         }
     }
 
@@ -430,7 +447,7 @@ public class BlackjackGame : MonoBehaviour
         DealCardInstance(dealerHand, dealerCardPosition, isHidden);
     }
 
-    //Updates the score and checks for busts.
+    //Updates the score, money, and checks for busts.
     private void UpdateUI(bool dealerHidden = true)
     {
         int playerValue = CalculateHandValue(playerHand);
@@ -446,7 +463,7 @@ public class BlackjackGame : MonoBehaviour
 
         UpdateBettingUI();
 
-        if(playerValue > 21)
+        if(playerValue > 21 && isRoundActive)
         {
             EndGame("Bust! You lose.");
         }
@@ -550,21 +567,22 @@ public class BlackjackGame : MonoBehaviour
     {
         isRoundActive = false;
 
+        string followUpMessage;
+
         if(message.Contains("You win") || message.Contains("Blackjack! You win"))
         {
             PlayerMoney += currentBet;
-
-            statusText.text = $"WIN! {message} You won ${currentBet}. Press Start Game to play again.";
+            followUpMessage = $"WIN! {message} You won ${currentBet}.";
         }
         else if(message.Contains("It's a tie"))
         {
-            statusText.text = $"PUSH! {message} Your bet (${currentBet}) is returned. Press Start Game to play again.";
+            followUpMessage = $"TIE! {message} Your bet (${currentBet}) is returned.";
         }
         else
         {
             PlayerMoney -= currentBet;
 
-            statusText.text = $"LOSS! {message} You lost ${currentBet}. Press Start Game to play again.";
+            followUpMessage = $"LOSS! {message} You lost ${currentBet}.";
         }
 
         UpdateUI(false);
@@ -582,9 +600,8 @@ public class BlackjackGame : MonoBehaviour
             return;
         }
 
-        currentBet = currentBet > PlayerMoney ? PlayerMoney : currentBet;
-        currentBet = currentBet < minBet ? minBet : currentBet;
+        statusText.text = $"{followUpMessage} Place your next bet and press DEAL.";
 
-        UpdateBettingUI();
+        StartGame();
     }
 }
