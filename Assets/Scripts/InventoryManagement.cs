@@ -8,13 +8,13 @@ public class InventoryManagement : MonoBehaviour
     [Header("Inventory Info")]
     [SerializeField] private Vector3[] itemsPositions;
     [SerializeField] private GameObject inventory;
-    public bool inInventory = false;
     
     [Header("Power-up Selection")]
     [SerializeField] private Color outlineColor = new Color(0.4f, 0.0f, 0.7f);
     [SerializeField] private float outlineWidth = 5.0f;
     public List<GameObject> _powerUps;
-    
+
+    [HideInInspector] public bool inInventory = false;
     private Transform _highlight;
     private Transform _selection;
     private RaycastHit _raycastHit;

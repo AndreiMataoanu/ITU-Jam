@@ -3,6 +3,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
+using UnityEngine.Serialization;
 
 public class PowerUpShop : MonoBehaviour
 {
@@ -19,7 +20,7 @@ public class PowerUpShop : MonoBehaviour
     private Transform _highlight;
     private Transform _selection;
     private RaycastHit _raycastHit;
-    private bool _hasSelected;
+    [HideInInspector] public bool hasSelected;
     private MoneyManagement _moneyManagement;
     private InventoryManagement _inventoryManagement;
     
@@ -57,11 +58,13 @@ public class PowerUpShop : MonoBehaviour
             GameObject powerUp = gameObject.transform.GetChild(i).gameObject;
             Destroy(powerUp);
         }
+
+        hasSelected = false;
     }
 
     private void HighlightPowerUp()
     {
-        if (_inventoryManagement.inInventory || _hasSelected) return;
+        if (_inventoryManagement.inInventory || hasSelected) return;
         
         if (_highlight)
         {
@@ -95,14 +98,14 @@ public class PowerUpShop : MonoBehaviour
     {
         if (_inventoryManagement.inInventory) return;
         
-        if (!_hasSelected && Mouse.current.leftButton.wasPressedThisFrame)
+        if (!hasSelected && Mouse.current.leftButton.wasPressedThisFrame)
         {
             if (_highlight)
             {
                 _selection = _raycastHit.transform;
                 _selection.gameObject.GetComponent<Outline>().enabled = false;
                 _highlight = null;
-                _hasSelected = true;
+                hasSelected = true;
 
                 BuySelectedPowerUp();
                 // TODO: After buying, change camera direction

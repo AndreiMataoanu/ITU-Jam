@@ -7,7 +7,6 @@ public class CameraController : MonoBehaviour
     [SerializeField] private float defaultSensitivity = 120f;
     [SerializeField] private float moveSpeed = 5f;
     [SerializeField] private GameObject powerUpManager;
-    
 
     [SerializeField] private Transform shopShoulder;
     [SerializeField] private Transform shopElbow;
@@ -64,13 +63,13 @@ public class CameraController : MonoBehaviour
         else if (!lookingAtShop && !lookingAtItemBox && Input.GetKeyDown(KeyCode.A))
         {
             EnterShop();
-            StartCoroutine("OpenShop");
+            StartCoroutine(OpenShop());
         }
         else if (lookingAtShop && Input.GetKeyDown(KeyCode.D))
         {
-            _powerUpShop.DestroyPowerUps();
+            _inventoryManagement.inInventory = false;
             EnterDefault();
-            StartCoroutine("CloseShop");
+            StartCoroutine(CloseShop());
         }
 
         if (isMoving)
@@ -105,11 +104,6 @@ public class CameraController : MonoBehaviour
     
     public void EnterShop()
     {
-        // Shop
-        _inventoryManagement.inInventory = false;
-        _powerUpShop.SpawnPowerUps();
-        
-        // Camera
         lookingAtShop = true;
         targetPos = shopPos;
         targetRot = Quaternion.Euler(shopRot);
@@ -135,7 +129,9 @@ public class CameraController : MonoBehaviour
         shopShoulder.localEulerAngles = new Vector3(0f, 0f, 0f);
         yield return new WaitForSeconds(0.25f);
         shopElbow.localEulerAngles = new Vector3(0f, -15f, 0f);
-
+        
+        if (!_powerUpShop.hasSelected)
+            _powerUpShop.SpawnPowerUps();
     }
 
     private IEnumerator CloseShop()
