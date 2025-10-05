@@ -159,13 +159,12 @@ public class BlackjackGame : MonoBehaviour
     private List<CardInstance> dealerHand = new List<CardInstance>();
     private List<GameObject> activeCardObjects = new List<GameObject>();
 
-    [Header("UI")]
-    [SerializeField] private TMPro.TextMeshProUGUI playerScoreText; //remove later
-    [SerializeField] private TMPro.TextMeshProUGUI dealerScoreText; //remove later
+    [SerializeField] private Animator standHandAnimator;
+    [SerializeField] private Animator hitHandAnimator;
 
     [Header("Betting UI")]
-    [SerializeField] private TMPro.TextMeshProUGUI moneyText; //remove later
-    [SerializeField] private TMPro.TextMeshProUGUI betText; //remove later
+    [SerializeField] private TMPro.TextMeshProUGUI moneyText;
+    [SerializeField] private TMPro.TextMeshProUGUI betText;
 
     //Betting Variables
     private int playerMoney = 500;
@@ -174,6 +173,7 @@ public class BlackjackGame : MonoBehaviour
     private const int minBet = 100;
 
     public bool isRoundActive = false;
+    private bool isActionLocked = false;
 
     private Coroutine currentBustCoroutine = null;
 
@@ -209,19 +209,19 @@ public class BlackjackGame : MonoBehaviour
 
     private readonly Vector3 cardScaleVector = Vector3.one * 0.05f;
     private PowerUpShop powerUpShop;
-    
+
     private void Start()
     {
         gameDeck = new Deck();
-        powerUpShop = powerUpManager.GetComponent<PowerUpShop>();    
+        powerUpShop = powerUpManager.GetComponent<PowerUpShop>();   
+        
         InitializeCardLookup();
-
         StartGame();
     }
 
     private void Update()
     {
-        if(currentBustCoroutine != null) return;
+        if(currentBustCoroutine != null || isActionLocked) return;
 
         if(!isRoundActive)
         {
@@ -301,8 +301,8 @@ public class BlackjackGame : MonoBehaviour
     //Helper function to update all betting related text and button states
     public void UpdateBettingUI()
     {
-        moneyText.text = $"Money: ${PlayerMoney}";
-        betText.text = $"Current Bet: ${currentBet}";
+        moneyText.text = $"${PlayerMoney}";
+        betText.text = $"${currentBet}";
     }
 
     public void IncreaseBet()
@@ -425,8 +425,6 @@ public class BlackjackGame : MonoBehaviour
     //Calculates the total value of a hand. Aces are 1 or 11.
     private int CalculateHandValue(List<CardInstance> hand)
     {
-        //List<Card> cards = hand.Select(x => x.cardData).ToList();
-
         int value = 0;
         int aceCount = 0;
 
@@ -482,7 +480,6 @@ public class BlackjackGame : MonoBehaviour
         }
     }
 
-
     //Resets the game and enters the betting phase
     public void StartGame()
     {
@@ -491,6 +488,7 @@ public class BlackjackGame : MonoBehaviour
         gameDeck.Shuffle();
 
         isRoundActive = false;
+        isActionLocked = false;
 
         //Reset abilities
         isKnifeActive = false;
@@ -506,13 +504,16 @@ public class BlackjackGame : MonoBehaviour
         {
             currentBet = PlayerMoney;
         }
+
         if(currentBet < minBet)
         {
             currentBet = minBet;
         }
 
-        playerScoreText.text = "Player Score: 0";
-        dealerScoreText.text = "Dealer Score: 0";
+        if(PlayerMoney < minBet)
+        {
+            currentBet = PlayerMoney;
+        }
 
         UpdateBettingUI();
     }
@@ -520,8 +521,10 @@ public class BlackjackGame : MonoBehaviour
     //Locks the bet and starts the round
     public IEnumerator DealRoundCoroutine()
     {
-        if(isRoundActive || currentBet < minBet || PlayerMoney < currentBet) yield break;
-        
+        if(isRoundActive || currentBet < minBet || PlayerMoney < currentBet || isActionLocked) yield break;
+
+        isActionLocked = true;
+
         if (powerUpShop.hasSelected)
             powerUpShop.DestroyPowerUps();
         isRoundActive = true;
@@ -533,6 +536,11 @@ public class BlackjackGame : MonoBehaviour
 
         UpdateUI();
         CheckBlackjack();
+
+        if(CalculateHandValue(playerHand) < 21)
+        {
+            isActionLocked = false;
+        }
     }
 
     private void CheckBlackjack()
@@ -778,14 +786,10 @@ public class BlackjackGame : MonoBehaviour
     {
         int playerValue = CalculateHandValue(playerHand);
 
-        playerScoreText.text = $"Player Score: {playerValue}";
-
         //Show only the value of the dealer's visible cards
         int dealerVisibleValue = dealerHidden && dealerHand.Count > 1
             ? CalculateHandValue(dealerHand.Where(x => !x.isHidden).ToList()) //Calculate only visible cards
             : CalculateHandValue(dealerHand); //Calculate all cards
-
-        dealerScoreText.text = $"Dealer Score: {(dealerHidden && dealerHand.Count > 1 ? $"{dealerVisibleValue} + ?" : dealerVisibleValue.ToString())}";
 
         UpdateBettingUI();
 
@@ -806,13 +810,14 @@ public class BlackjackGame : MonoBehaviour
 
     public void Hit()
     {
-        if(!isRoundActive) return;
+        if(!isRoundActive || isActionLocked) return;
 
-        //bool wasPrayerBeadsActive = isPrayerBeadsActive;
+        if(hitHandAnimator != null)
+        {
+            hitHandAnimator.SetTrigger("hitTrigger");
+        }
 
         StartCoroutine(DealCardToPlayerCoroutine());
-
-        //UpdateUI();
 
         if(scissorsValueReduction > 0)
         {
@@ -825,7 +830,14 @@ public class BlackjackGame : MonoBehaviour
 
     public void Stand()
     {
-        if(!isRoundActive) return;
+        if(!isRoundActive || isActionLocked) return;
+
+        isActionLocked = true;
+
+        if(standHandAnimator != null)
+        {
+            standHandAnimator.SetTrigger("standTrigger");
+        }
 
         StartCoroutine(DealerTurnCoroutine());
     }
@@ -929,7 +941,9 @@ public class BlackjackGame : MonoBehaviour
         }
 
         UpdateUI(false);
-        
+
+        isActionLocked = false;
+
         if(PlayerMoney < minBet) return;
 
         if(PlayerMoney >= 10000) return;
