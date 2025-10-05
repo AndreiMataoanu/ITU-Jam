@@ -17,7 +17,5 @@ public class CardDisplay : MonoBehaviour
         {
             cardFace.SetActive(!isHidden);
         }
-
-        //flipping animation here
     }
 }
