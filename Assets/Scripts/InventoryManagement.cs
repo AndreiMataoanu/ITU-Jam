@@ -8,7 +8,8 @@ public class InventoryManagement : MonoBehaviour
     [Header("Inventory Info")]
     [SerializeField] private Vector3[] itemsPositions;
     [SerializeField] private GameObject inventory;
-    
+    [SerializeField] private AudioManager audioManager;
+
     [Header("Power-up Selection")]
     [SerializeField] private Color outlineColor = new Color(0.4f, 0.0f, 0.7f);
     [SerializeField] private float outlineWidth = 5.0f;
@@ -41,6 +42,7 @@ public class InventoryManagement : MonoBehaviour
     public void UseItem(GameObject powerUp)
     {
         powerUp.GetComponent<PowerUpInfo>().Activate();
+        audioManager.Play(powerUp.name);
         _powerUps.Remove(powerUp);
         Destroy(powerUp);
         ArrangeItems();
