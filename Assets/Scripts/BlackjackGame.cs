@@ -504,9 +504,15 @@ public class BlackjackGame : MonoBehaviour
         {
             currentBet = PlayerMoney;
         }
+
         if(currentBet < minBet)
         {
             currentBet = minBet;
+        }
+
+        if(PlayerMoney < minBet)
+        {
+            currentBet = PlayerMoney;
         }
 
         UpdateBettingUI();
