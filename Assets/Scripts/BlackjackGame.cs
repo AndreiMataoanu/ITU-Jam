@@ -301,8 +301,8 @@ public class BlackjackGame : MonoBehaviour
     //Helper function to update all betting related text and button states
     public void UpdateBettingUI()
     {
-        moneyText.text = $"Money: ${PlayerMoney}";
-        betText.text = $"Current Bet: ${currentBet}";
+        moneyText.text = $"${PlayerMoney}";
+        betText.text = $"${currentBet}";
     }
 
     public void IncreaseBet()
