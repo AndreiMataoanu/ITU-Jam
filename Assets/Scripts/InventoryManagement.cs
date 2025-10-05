@@ -32,6 +32,7 @@ public class InventoryManagement : MonoBehaviour
         
         _powerUps.Add(powerUp);
         powerUp.transform.position = itemsPositions[_powerUps.Count - 1];
+        powerUp.transform.Rotate(Vector3.up, 90);
         powerUp.transform.SetParent(inventory.transform, true);
         
         return true;
