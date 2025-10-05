@@ -20,8 +20,6 @@ public class CameraController : MonoBehaviour
 
     private bool lookingAtItemBox = false;
     private bool lookingAtShop = false;
-    private bool canBuyItem = false;
-    private bool canUseItem = false;
 
     private Vector3 targetPos;
     private Quaternion targetRot;
