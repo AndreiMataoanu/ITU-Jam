@@ -46,14 +46,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BlackjackGame
   playerScoreText: {fileID: 0}
   dealerScoreText: {fileID: 0}
-  statusText: {fileID: 0}
-  hitButton: {fileID: 0}
-  standButton: {fileID: 0}
   moneyText: {fileID: 0}
   betText: {fileID: 0}
-  betUpButton: {fileID: 0}
-  betDownButton: {fileID: 0}
-  dealButton: {fileID: 0}
   cardPrefabs:
   - rank: 1
     suit: 0
