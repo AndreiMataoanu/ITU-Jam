@@ -28,7 +28,7 @@ public class BlackjackGame : MonoBehaviour
             if(rank >= Rank.Ten && rank <= Rank.King) return 10;
             if(rank == Rank.Ace) return 11;
 
-            return (int) rank;
+            return (int)rank;
         }
 
         public override string ToString()
@@ -176,14 +176,14 @@ public class BlackjackGame : MonoBehaviour
     private Coroutine currentBustCoroutine = null;
 
     //Abilities
-    private bool isKnifeAvailable = true; //use once per round
     private bool isKnifeActive = false;
-    private bool isScissorsAvailable = true; //use once per round
     private int scissorsValueReduction = 0;
-    private bool isPrayerBeadsAvailable = true; //use once per round
     private bool isPrayerBeadsActive = false;
-    private bool isSunglassesAvailable = true;
     private GameObject peekedCardObject = null;
+    public bool IsKnifeAvailable { get; private set; } = true;
+    public bool IsScissorsAvailable { get; private set; } = true;
+    public bool IsPrayerBeadsAvailable { get; private set; } = true;
+    public bool IsSunglassesAvailable { get; private set; } = true;
 
     public int PlayerMoney
     {
@@ -251,22 +251,22 @@ public class BlackjackGame : MonoBehaviour
                 Stand();
             }
 
-            if(Input.GetKeyDown(KeyCode.Alpha1) && isKnifeAvailable)
+            if(Input.GetKeyDown(KeyCode.Alpha1) && IsKnifeAvailable)
             {
                 ActivateKnife();
             }
 
-            if(Input.GetKeyDown(KeyCode.Alpha2) && isScissorsAvailable)
+            if(Input.GetKeyDown(KeyCode.Alpha2) && IsScissorsAvailable)
             {
                 ActivateScissors();
             }
 
-            if(Input.GetKeyDown(KeyCode.Alpha3) && isPrayerBeadsAvailable)
+            if(Input.GetKeyDown(KeyCode.Alpha3) && IsPrayerBeadsAvailable)
             {
                 ActivatePrayerBeads();
             }
 
-            if(Input.GetKeyDown(KeyCode.Alpha4) && isSunglassesAvailable)
+            if(Input.GetKeyDown(KeyCode.Alpha4) && IsSunglassesAvailable)
             {
                 ActivateSunglasses();
             }
@@ -339,17 +339,17 @@ public class BlackjackGame : MonoBehaviour
 
     public void ActivateKnife()
     {
-        if(!isRoundActive || isKnifeActive || !isKnifeAvailable) return;
+        if(!isRoundActive || isKnifeActive || !IsKnifeAvailable) return;
 
         isKnifeActive = true;
-        isKnifeAvailable = false;
+        IsKnifeAvailable = false;
 
         Debug.Log("Knife activated"); //remove later
     }
 
     public void ActivateScissors()
     {
-        if(!isRoundActive || !isScissorsAvailable) return;
+        if(!isRoundActive || !IsScissorsAvailable) return;
 
         if(CalculateHandValue(playerHand) > 21) return;
 
@@ -362,7 +362,7 @@ public class BlackjackGame : MonoBehaviour
 
         scissorsValueReduction = originalValue - halvedValue;
 
-        isScissorsAvailable = false;
+        IsScissorsAvailable = false;
 
         UpdateUI(true);
 
@@ -371,19 +371,19 @@ public class BlackjackGame : MonoBehaviour
 
     public void ActivatePrayerBeads()
     {
-        if(!isRoundActive || isPrayerBeadsActive || !isPrayerBeadsAvailable) return;
+        if(!isRoundActive || isPrayerBeadsActive || !IsPrayerBeadsAvailable) return;
 
         if(CalculateHandValue(playerHand) > 21) return;
 
         isPrayerBeadsActive = true;
-        isPrayerBeadsAvailable = false;
+        IsPrayerBeadsAvailable = false;
 
         Debug.Log("Prayer activated"); //remove later
     }
 
     public void ActivateSunglasses()
     {
-        if(!isRoundActive || !isSunglassesAvailable || peekedCardObject != null) return;
+        if(!isRoundActive || !IsSunglassesAvailable || peekedCardObject != null) return;
 
         if(CalculateHandValue(playerHand) > 21) return;
 
@@ -416,7 +416,7 @@ public class BlackjackGame : MonoBehaviour
 
         activeCardObjects.Add(peekedCardObject);
 
-        isSunglassesAvailable = false;
+        IsSunglassesAvailable = false;
     }
 
     //Calculates the total value of a hand. Aces are 1 or 11.
@@ -491,12 +491,12 @@ public class BlackjackGame : MonoBehaviour
 
         //Reset abilities
         isKnifeActive = false;
-        isKnifeAvailable = true;
-        isScissorsAvailable = true;
+        IsKnifeAvailable = true;
+        IsScissorsAvailable = true;
         scissorsValueReduction = 0;
-        isPrayerBeadsAvailable = true;
+        IsPrayerBeadsAvailable = true;
         isPrayerBeadsActive = false;
-        isSunglassesAvailable = true;
+        IsSunglassesAvailable = true;
 
         //Set bet to the last valid bet
         if(currentBet > PlayerMoney)
