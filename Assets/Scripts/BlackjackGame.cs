@@ -1,7 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using System.Linq;
+using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class BlackjackGame : MonoBehaviour
 {
@@ -165,6 +166,7 @@ public class BlackjackGame : MonoBehaviour
     [Header("Betting UI")]
     [SerializeField] private TMPro.TextMeshProUGUI moneyText;
     [SerializeField] private TMPro.TextMeshProUGUI betText;
+    [SerializeField] private TMPro.TextMeshProUGUI statusText;
 
     //Betting Variables
     private int playerMoney = 500;
@@ -347,7 +349,7 @@ public class BlackjackGame : MonoBehaviour
         isKnifeActive = true;
         IsKnifeAvailable = false;
 
-        Debug.Log("Knife activated"); //remove later
+        statusText.text = "Knife activated: Dealer will be forced to stand.";
     }
 
     public void ActivateScissors()
@@ -369,7 +371,7 @@ public class BlackjackGame : MonoBehaviour
 
         UpdateUI(true);
 
-        Debug.Log($"Scissors activated"); //remove later
+        statusText.text = "Scissors activated: Dealer's visible card value reduced!";
     }
 
     public void ActivatePrayerBeads()
@@ -381,7 +383,7 @@ public class BlackjackGame : MonoBehaviour
         isPrayerBeadsActive = true;
         IsPrayerBeadsAvailable = false;
 
-        Debug.Log("Prayer activated"); //remove later
+        statusText.text = "Crucifix activated: Next card will be blessed with luck!";
     }
 
     public void ActivateSunglasses()
@@ -420,6 +422,8 @@ public class BlackjackGame : MonoBehaviour
         activeCardObjects.Add(peekedCardObject);
 
         IsSunglassesAvailable = false;
+
+        statusText.text = "Sunglasses activated: Next card revealed!";
     }
 
     //Calculates the total value of a hand. Aces are 1 or 11.
@@ -486,6 +490,7 @@ public class BlackjackGame : MonoBehaviour
         ClearTable();
 
         gameDeck.Shuffle();
+        statusText.text = "";
 
         isRoundActive = false;
         isActionLocked = false;
@@ -817,6 +822,8 @@ public class BlackjackGame : MonoBehaviour
             hitHandAnimator.SetTrigger("hitTrigger");
         }
 
+        statusText.text = "";
+
         StartCoroutine(DealCardToPlayerCoroutine());
 
         if(scissorsValueReduction > 0)
@@ -839,6 +846,8 @@ public class BlackjackGame : MonoBehaviour
             standHandAnimator.SetTrigger("standTrigger");
         }
 
+        statusText.text = "";
+
         StartCoroutine(DealerTurnCoroutine());
     }
 
@@ -846,6 +855,8 @@ public class BlackjackGame : MonoBehaviour
     {
         //Reveals the dealers hidden card.
         CardInstance hiddenCard = dealerHand.FirstOrDefault(x => x.isHidden);
+
+        statusText.text = "";
 
         if(hiddenCard != null)
         {
@@ -944,9 +955,9 @@ public class BlackjackGame : MonoBehaviour
 
         isActionLocked = false;
 
-        if(PlayerMoney < minBet) return;
+        if(PlayerMoney < minBet) SceneManager.LoadSceneAsync(0);
 
-        if(PlayerMoney >= 10000) return;
+        if(PlayerMoney >= 10000) SceneManager.LoadSceneAsync(0);
 
         StartGame();
     }
