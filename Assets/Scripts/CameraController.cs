@@ -7,7 +7,8 @@ public class CameraController : MonoBehaviour
     [SerializeField] private float defaultSensitivity = 60f;
     [SerializeField] private float moveSpeed = 5f;
     [SerializeField] private GameObject powerUpManager;
-
+    [SerializeField] private GameObject blackjackManager;
+    
     [SerializeField] private Transform shopShoulder;
     [SerializeField] private Transform shopElbow;
 
@@ -29,6 +30,7 @@ public class CameraController : MonoBehaviour
 
     private PowerUpShop _powerUpShop;
     private InventoryManagement _inventoryManagement;
+    private BlackjackGame _blackjackGame;
     
     private void Start()
     {
@@ -41,6 +43,7 @@ public class CameraController : MonoBehaviour
         CursorLock(true);
         _powerUpShop = powerUpManager.GetComponent<PowerUpShop>();
         _inventoryManagement = powerUpManager.GetComponent<InventoryManagement>();
+        _blackjackGame = blackjackManager.GetComponent<BlackjackGame>();
     }
 
     void Update()
@@ -62,7 +65,7 @@ public class CameraController : MonoBehaviour
         {
             EnterDefault();
         }
-        else if (!lookingAtShop && !lookingAtItemBox && Input.GetKeyDown(KeyCode.A))
+        else if (!lookingAtShop && !lookingAtItemBox && Input.GetKeyDown(KeyCode.A) && !_blackjackGame.isRoundActive)
         {
             EnterShop();
             StartCoroutine(OpenShop());

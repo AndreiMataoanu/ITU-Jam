@@ -39707,6 +39707,7 @@ MonoBehaviour:
   defaultSensitivity: 120
   moveSpeed: 5
   powerUpManager: {fileID: 36811379}
+  blackjackManager: {fileID: 529091241}
   shopShoulder: {fileID: 577888483}
   shopElbow: {fileID: 18110601}
 --- !u!1 &1256230893
@@ -47868,6 +47869,10 @@ PrefabInstance:
       propertyPath: betDownButton
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 4234581667304054485, guid: b5f91f3a40d022d478e486e8004f5832, type: 3}
+      propertyPath: powerUpManager
+      value: 
+      objectReference: {fileID: 36811379}
     - target: {fileID: 4234581667304054485, guid: b5f91f3a40d022d478e486e8004f5832, type: 3}
       propertyPath: dealerScoreText
       value: 

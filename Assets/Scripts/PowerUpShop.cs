@@ -24,6 +24,7 @@ public class PowerUpShop : MonoBehaviour
     [HideInInspector] public bool hasSelected;
     private BlackjackGame _blackjackGame;
     private InventoryManagement _inventoryManagement;
+    private bool _hasSpawned = false;
     
     private void Awake()
     {
@@ -42,7 +43,7 @@ public class PowerUpShop : MonoBehaviour
 
     public void SpawnPowerUps()
     {
-        if (powerUpPrefabs == null || powerUpPrefabs.Count() < powerUpCount) return;
+        if (_hasSpawned || powerUpPrefabs == null || powerUpPrefabs.Count() < powerUpCount) return;
         
         for (int i = 0; i < powerUpCount; i++)
         {
@@ -50,6 +51,8 @@ public class PowerUpShop : MonoBehaviour
             Vector3 prefabPosition = transform.position + Vector3.up * (i * spaceOffset);
             Instantiate(powerUpPrefabs[randomIndex], prefabPosition, Quaternion.identity, transform);
         }
+
+        _hasSpawned = true;
     }
 
     public void DestroyPowerUps()
@@ -61,6 +64,7 @@ public class PowerUpShop : MonoBehaviour
         }
 
         hasSelected = false;
+        _hasSpawned = false;
     }
 
     private void HighlightPowerUp()
