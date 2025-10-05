@@ -127,4 +127,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PowerUpInfo
   price: 10
-  type: 0
+  type: 5
