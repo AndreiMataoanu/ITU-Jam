@@ -44,10 +44,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d681071c0ffcd6944a3b712dc7947bf6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BlackjackGame
-  playerScoreText: {fileID: 0}
-  dealerScoreText: {fileID: 0}
+  powerUpManager: {fileID: 0}
+  standHandAnimator: {fileID: 0}
+  hitHandAnimator: {fileID: 0}
   moneyText: {fileID: 0}
   betText: {fileID: 0}
+  isRoundActive: 0
   cardPrefabs:
   - rank: 1
     suit: 0
@@ -207,4 +209,6 @@ MonoBehaviour:
     cardPrefab: {fileID: 7390946069232093434, guid: 2e583a1d31df3c749b4ed82b56da9c3f, type: 3}
   playerCardPosition: {fileID: 0}
   dealerCardPosition: {fileID: 0}
+  sunglassesCardPosition: {fileID: 0}
+  deckPosition: {fileID: 0}
   cardSpacing: 0.05
