@@ -199,9 +199,13 @@ public class BlackjackGame : MonoBehaviour
     [SerializeField] private Transform playerCardPosition;
     [SerializeField] private Transform dealerCardPosition;
     [SerializeField] private Transform sunglassesCardPosition;
+    [SerializeField] private Transform deckPosition;
 
     [SerializeField] private float cardSpacing = 30.0f;
     private const float zOverlap = 0.01f;
+    private const float cardAnimationDuration = 0.25f;
+
+    private readonly Vector3 cardScaleVector = Vector3.one * 0.05f;
 
     private void Start()
     {
@@ -229,9 +233,10 @@ public class BlackjackGame : MonoBehaviour
             }
 
             bool canDeal = currentBet >= minBet && PlayerMoney >= currentBet;
+
             if(Input.GetKeyDown(KeyCode.Space) && canDeal)
             {
-                Deal();
+                StartCoroutine(DealRoundCoroutine());
             }
         }
         else //Handle playing actions.
@@ -390,7 +395,17 @@ public class BlackjackGame : MonoBehaviour
 
         if(!cardPrefabLookup.TryGetValue((newCardData.rank, newCardData.suit), out GameObject cardPrefabToUse)) return;
 
-        peekedCardObject = Instantiate(cardPrefabToUse, sunglassesCardPosition);
+        peekedCardObject = Instantiate(cardPrefabToUse, deckPosition);
+
+        peekedCardObject.transform.localScale = cardScaleVector;
+
+        StartCoroutine(CardAnimationCoroutine(
+            peekedCardObject.transform,
+            sunglassesCardPosition.position,
+            Quaternion.identity,
+            cardScaleVector,
+            cardAnimationDuration
+        ));
 
         CardDisplay cardDisplay = peekedCardObject.GetComponent<CardDisplay>();
 
@@ -500,16 +515,17 @@ public class BlackjackGame : MonoBehaviour
     }
 
     //Locks the bet and starts the round
-    public void Deal()
+    public IEnumerator DealRoundCoroutine()
     {
-        if(isRoundActive || currentBet < minBet || PlayerMoney < currentBet) return;
+        if(isRoundActive || currentBet < minBet || PlayerMoney < currentBet) yield break;
 
         isRoundActive = true;
 
-        DealCardToPlayer();
-        DealCardToDealer(false); //Dealers first card is visible
-        DealCardToPlayer();
-        DealCardToDealer(true); //Dealers second card is hidden
+        yield return StartCoroutine(DealCardToPlayerCoroutine());
+        yield return StartCoroutine(DealCardToDealerCoroutine(false));
+        yield return StartCoroutine(DealCardToPlayerCoroutine());
+        yield return StartCoroutine(DealCardToDealerCoroutine(true));
+
         UpdateUI();
         CheckBlackjack();
     }
@@ -565,7 +581,9 @@ public class BlackjackGame : MonoBehaviour
     {
         if(!cardPrefabLookup.TryGetValue((newCardData.rank, newCardData.suit), out GameObject cardPrefabToUse)) return null;
 
-        GameObject cardObject = Instantiate(cardPrefabToUse, parentTransform);
+        GameObject cardObject = Instantiate(cardPrefabToUse, deckPosition);
+
+        cardObject.transform.localScale = cardScaleVector;
 
         activeCardObjects.Add(cardObject);
 
@@ -584,7 +602,35 @@ public class BlackjackGame : MonoBehaviour
         return newCardInstance;
     }
 
-    private void DealCardToPlayer()
+    private IEnumerator CardAnimationCoroutine(Transform cardTransform, Vector3 targetPosition, Quaternion targetRotation, Vector3 targetScale, float duration)
+    {
+        Vector3 startPosition = cardTransform.position;
+        Quaternion startRotation = cardTransform.rotation;
+        Vector3 startScale = cardTransform.localScale;
+
+        float time = 0;
+
+        while(time < duration)
+        {
+            time += Time.deltaTime;
+
+            float t = time / duration;
+
+            t = t * t * (3f - 2f * t);
+
+            cardTransform.position = Vector3.Lerp(startPosition, targetPosition, t);
+            cardTransform.rotation = Quaternion.Lerp(startRotation, targetRotation, t);
+            cardTransform.localScale = Vector3.Lerp(startScale, targetScale, t);
+
+            yield return null;
+        }
+
+        cardTransform.position = targetPosition;
+        cardTransform.rotation = targetRotation;
+        cardTransform.localScale = targetScale;
+    }
+
+    private IEnumerator DealCardToPlayerCoroutine()
     {
         if(peekedCardObject != null)
         {
@@ -653,10 +699,35 @@ public class BlackjackGame : MonoBehaviour
             newCardData = gameDeck.DealCard();
         }
 
-        DealCardInstance(newCardData, playerHand, playerCardPosition, false);
+        CardInstance newCardInstance = DealCardInstance(newCardData, playerHand, playerCardPosition, false);
+
+        if(newCardInstance != null)
+        {
+            UpdateHandVisuals(playerHand);
+
+            Vector3 targetLocalPos = newCardInstance.displayComponent.transform.localPosition;
+            Quaternion targetRotation = newCardInstance.displayComponent.transform.localRotation;
+
+            newCardInstance.displayComponent.transform.SetParent(playerCardPosition.parent);
+
+            yield return StartCoroutine(CardAnimationCoroutine(
+                newCardInstance.displayComponent.transform,
+                playerCardPosition.TransformPoint(targetLocalPos),
+                playerCardPosition.rotation * targetRotation,
+                cardScaleVector,
+                cardAnimationDuration
+            ));
+
+            newCardInstance.displayComponent.transform.SetParent(playerCardPosition);
+            newCardInstance.displayComponent.transform.localPosition = targetLocalPos;
+            newCardInstance.displayComponent.transform.localRotation = targetRotation;
+            newCardInstance.displayComponent.transform.localScale = cardScaleVector;
+
+            UpdateUI(true);
+        }
     }
 
-    private void DealCardToDealer(bool isHidden)
+    private IEnumerator DealCardToDealerCoroutine(bool isHidden)
     {
         if(peekedCardObject != null)
         {
@@ -669,7 +740,32 @@ public class BlackjackGame : MonoBehaviour
 
         Card newCardData = gameDeck.DealCard();
 
-        DealCardInstance(newCardData, dealerHand, dealerCardPosition, isHidden);
+        CardInstance newCardInstance = DealCardInstance(newCardData, dealerHand, dealerCardPosition, isHidden);
+
+        if(newCardInstance != null)
+        {
+            UpdateHandVisuals(dealerHand);
+
+            Vector3 targetLocalPos = newCardInstance.displayComponent.transform.localPosition;
+            Quaternion targetRotation = newCardInstance.displayComponent.transform.localRotation;
+
+            newCardInstance.displayComponent.transform.SetParent(dealerCardPosition.parent);
+
+            yield return StartCoroutine(CardAnimationCoroutine(
+                newCardInstance.displayComponent.transform,
+                dealerCardPosition.TransformPoint(targetLocalPos),
+                dealerCardPosition.rotation * targetRotation,
+                cardScaleVector,
+                cardAnimationDuration
+            ));
+
+            newCardInstance.displayComponent.transform.SetParent(dealerCardPosition);
+            newCardInstance.displayComponent.transform.localPosition = targetLocalPos;
+            newCardInstance.displayComponent.transform.localRotation = targetRotation;
+            newCardInstance.displayComponent.transform.localScale = cardScaleVector;
+
+            UpdateUI(true);
+        }
     }
 
     //Updates the score, money, and checks for busts.
@@ -709,8 +805,9 @@ public class BlackjackGame : MonoBehaviour
 
         //bool wasPrayerBeadsActive = isPrayerBeadsActive;
 
-        DealCardToPlayer();
-        UpdateUI();
+        StartCoroutine(DealCardToPlayerCoroutine());
+
+        //UpdateUI();
 
         if(scissorsValueReduction > 0)
         {
@@ -768,7 +865,8 @@ public class BlackjackGame : MonoBehaviour
         {
             while(dealerValue < 17)
             {
-                DealCardToDealer(false);
+                yield return StartCoroutine(DealCardToDealerCoroutine(false));
+
                 UpdateUI(false);
 
                 dealerValue = CalculateHandValue(dealerHand);
