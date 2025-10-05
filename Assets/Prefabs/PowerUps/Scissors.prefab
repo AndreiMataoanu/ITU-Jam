@@ -125,7 +125,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b4b69a41c3e6634587c1021a34ba729, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PowerUpInfo
-  price: 50
+  price: 100
   type: 1
 --- !u!1001 &6381883920826901014
 PrefabInstance:

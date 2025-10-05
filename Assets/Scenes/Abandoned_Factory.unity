@@ -908,6 +908,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 529091241}
     - target: {fileID: 3179940395268594482, guid: f7a4ff88a2f9ccc478301a1b11a316e8, type: 3}
+      propertyPath: audioManagerGameObject
+      value: 
+      objectReference: {fileID: 786000295}
+    - target: {fileID: 3179940395268594482, guid: f7a4ff88a2f9ccc478301a1b11a316e8, type: 3}
       propertyPath: powerUpPrefabs.Array.size
       value: 4
       objectReference: {fileID: 0}
@@ -11539,6 +11543,11 @@ Mesh:
       - serializedVersion: 1
         m_IndexStart: 0
         m_IndexCount: 0
+--- !u!1 &786000295 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5036363664628651963, guid: ff0774aa4f4e65644a0abe96c423cecd, type: 3}
+  m_PrefabInstance: {fileID: 1642892133}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &794062924
 PrefabInstance:
   m_ObjectHideFlags: 0
