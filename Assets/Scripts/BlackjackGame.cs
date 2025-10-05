@@ -173,6 +173,7 @@ public class BlackjackGame : MonoBehaviour
     private const int minBet = 100;
 
     public bool isRoundActive = false;
+    private bool isActionLocked = false;
 
     private Coroutine currentBustCoroutine = null;
 
@@ -212,15 +213,15 @@ public class BlackjackGame : MonoBehaviour
     private void Start()
     {
         gameDeck = new Deck();
-        powerUpShop = powerUpManager.GetComponent<PowerUpShop>();    
+        powerUpShop = powerUpManager.GetComponent<PowerUpShop>();   
+        
         InitializeCardLookup();
-
         StartGame();
     }
 
     private void Update()
     {
-        if(currentBustCoroutine != null) return;
+        if(currentBustCoroutine != null || isActionLocked) return;
 
         if(!isRoundActive)
         {
@@ -487,6 +488,7 @@ public class BlackjackGame : MonoBehaviour
         gameDeck.Shuffle();
 
         isRoundActive = false;
+        isActionLocked = false;
 
         //Reset abilities
         isKnifeActive = false;
@@ -502,9 +504,15 @@ public class BlackjackGame : MonoBehaviour
         {
             currentBet = PlayerMoney;
         }
+
         if(currentBet < minBet)
         {
             currentBet = minBet;
+        }
+
+        if(PlayerMoney < minBet)
+        {
+            currentBet = PlayerMoney;
         }
 
         UpdateBettingUI();
@@ -513,8 +521,10 @@ public class BlackjackGame : MonoBehaviour
     //Locks the bet and starts the round
     public IEnumerator DealRoundCoroutine()
     {
-        if(isRoundActive || currentBet < minBet || PlayerMoney < currentBet) yield break;
-        
+        if(isRoundActive || currentBet < minBet || PlayerMoney < currentBet || isActionLocked) yield break;
+
+        isActionLocked = true;
+
         if (powerUpShop.hasSelected)
             powerUpShop.DestroyPowerUps();
         isRoundActive = true;
@@ -526,6 +536,11 @@ public class BlackjackGame : MonoBehaviour
 
         UpdateUI();
         CheckBlackjack();
+
+        if(CalculateHandValue(playerHand) < 21)
+        {
+            isActionLocked = false;
+        }
     }
 
     private void CheckBlackjack()
@@ -795,7 +810,7 @@ public class BlackjackGame : MonoBehaviour
 
     public void Hit()
     {
-        if(!isRoundActive) return;
+        if(!isRoundActive || isActionLocked) return;
 
         if(hitHandAnimator != null)
         {
@@ -815,7 +830,9 @@ public class BlackjackGame : MonoBehaviour
 
     public void Stand()
     {
-        if(!isRoundActive) return;
+        if(!isRoundActive || isActionLocked) return;
+
+        isActionLocked = true;
 
         if(standHandAnimator != null)
         {
@@ -924,7 +941,9 @@ public class BlackjackGame : MonoBehaviour
         }
 
         UpdateUI(false);
-        
+
+        isActionLocked = false;
+
         if(PlayerMoney < minBet) return;
 
         if(PlayerMoney >= 10000) return;
