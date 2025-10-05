@@ -159,13 +159,12 @@ public class BlackjackGame : MonoBehaviour
     private List<CardInstance> dealerHand = new List<CardInstance>();
     private List<GameObject> activeCardObjects = new List<GameObject>();
 
-    [Header("UI")]
-    [SerializeField] private TMPro.TextMeshProUGUI playerScoreText; //remove later
-    [SerializeField] private TMPro.TextMeshProUGUI dealerScoreText; //remove later
+    [SerializeField] private Animator standHandAnimator;
+    [SerializeField] private Animator hitHandAnimator;
 
     [Header("Betting UI")]
-    [SerializeField] private TMPro.TextMeshProUGUI moneyText; //remove later
-    [SerializeField] private TMPro.TextMeshProUGUI betText; //remove later
+    [SerializeField] private TMPro.TextMeshProUGUI moneyText;
+    [SerializeField] private TMPro.TextMeshProUGUI betText;
 
     //Betting Variables
     private int playerMoney = 500;
@@ -209,7 +208,7 @@ public class BlackjackGame : MonoBehaviour
 
     private readonly Vector3 cardScaleVector = Vector3.one * 0.05f;
     private PowerUpShop powerUpShop;
-    
+
     private void Start()
     {
         gameDeck = new Deck();
@@ -425,8 +424,6 @@ public class BlackjackGame : MonoBehaviour
     //Calculates the total value of a hand. Aces are 1 or 11.
     private int CalculateHandValue(List<CardInstance> hand)
     {
-        //List<Card> cards = hand.Select(x => x.cardData).ToList();
-
         int value = 0;
         int aceCount = 0;
 
@@ -482,7 +479,6 @@ public class BlackjackGame : MonoBehaviour
         }
     }
 
-
     //Resets the game and enters the betting phase
     public void StartGame()
     {
@@ -510,9 +506,6 @@ public class BlackjackGame : MonoBehaviour
         {
             currentBet = minBet;
         }
-
-        playerScoreText.text = "Player Score: 0";
-        dealerScoreText.text = "Dealer Score: 0";
 
         UpdateBettingUI();
     }
@@ -778,14 +771,10 @@ public class BlackjackGame : MonoBehaviour
     {
         int playerValue = CalculateHandValue(playerHand);
 
-        playerScoreText.text = $"Player Score: {playerValue}";
-
         //Show only the value of the dealer's visible cards
         int dealerVisibleValue = dealerHidden && dealerHand.Count > 1
             ? CalculateHandValue(dealerHand.Where(x => !x.isHidden).ToList()) //Calculate only visible cards
             : CalculateHandValue(dealerHand); //Calculate all cards
-
-        dealerScoreText.text = $"Dealer Score: {(dealerHidden && dealerHand.Count > 1 ? $"{dealerVisibleValue} + ?" : dealerVisibleValue.ToString())}";
 
         UpdateBettingUI();
 
@@ -808,11 +797,12 @@ public class BlackjackGame : MonoBehaviour
     {
         if(!isRoundActive) return;
 
-        //bool wasPrayerBeadsActive = isPrayerBeadsActive;
+        if(hitHandAnimator != null)
+        {
+            hitHandAnimator.SetTrigger("hitTrigger");
+        }
 
         StartCoroutine(DealCardToPlayerCoroutine());
-
-        //UpdateUI();
 
         if(scissorsValueReduction > 0)
         {
@@ -826,6 +816,11 @@ public class BlackjackGame : MonoBehaviour
     public void Stand()
     {
         if(!isRoundActive) return;
+
+        if(standHandAnimator != null)
+        {
+            standHandAnimator.SetTrigger("standTrigger");
+        }
 
         StartCoroutine(DealerTurnCoroutine());
     }
