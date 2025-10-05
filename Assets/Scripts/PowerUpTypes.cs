@@ -4,7 +4,7 @@ public enum PowerUpType
 {
     Knife,
     Scissors,
-    PrayerBeads,
+    Crucifix,
     Glove,
     Sunglasses,
     Cuffs

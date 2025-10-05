@@ -27,7 +27,7 @@ public class PowerUpInfo : MonoBehaviour
             case PowerUpType.Scissors:
                 _blackjackGame.ActivateScissors();
                 break;
-            case PowerUpType.PrayerBeads:
+            case PowerUpType.Crucifix:
                 _blackjackGame.ActivatePrayerBeads();
                 break;
             case PowerUpType.Glove:

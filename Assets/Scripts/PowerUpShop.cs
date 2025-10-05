@@ -111,8 +111,7 @@ public class PowerUpShop : MonoBehaviour
                 _selection = _raycastHit.transform;
                 _selection.gameObject.GetComponent<Outline>().enabled = false;
                 _highlight = null;
-                hasSelected = true;
-
+                
                 BuySelectedPowerUp();
                 _blackjackGame.UpdateBettingUI();
                 // TODO: After buying, change camera direction
@@ -123,8 +122,22 @@ public class PowerUpShop : MonoBehaviour
     private void BuySelectedPowerUp()
     {
         var selectionInfo = _selection.gameObject.GetComponent<PowerUpInfo>();
+        if (!HasEnoughMoney(selectionInfo)) return;
         
         if (_inventoryManagement.AddItem(_selection.gameObject))
             _blackjackGame.LoseAmount(selectionInfo.price);
+    }
+
+    private bool HasEnoughMoney(PowerUpInfo selectionInfo)
+    {
+        if (_blackjackGame.PlayerMoney < selectionInfo.price)
+        {
+            _selection = null;
+            hasSelected = false;
+            return false;
+        }
+
+        hasSelected = true;
+        return true;
     }
 }

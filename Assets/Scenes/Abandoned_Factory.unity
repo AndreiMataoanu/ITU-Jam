@@ -793,6 +793,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 3179940395268594482, guid: f7a4ff88a2f9ccc478301a1b11a316e8, type: 3}
+      propertyPath: spaceOffset
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3179940395268594482, guid: f7a4ff88a2f9ccc478301a1b11a316e8, type: 3}
       propertyPath: blackjackGameManager
       value: 
       objectReference: {fileID: 529091241}
@@ -811,11 +815,11 @@ PrefabInstance:
     - target: {fileID: 3179940395268594482, guid: f7a4ff88a2f9ccc478301a1b11a316e8, type: 3}
       propertyPath: 'powerUpPrefabs.Array.data[2]'
       value: 
-      objectReference: {fileID: 7723194947337648236, guid: a172e2874f255854b946352a647fe220, type: 3}
+      objectReference: {fileID: 981487110158306035, guid: 2ae1700d0e2bf144c920d944d54520d9, type: 3}
     - target: {fileID: 3179940395268594482, guid: f7a4ff88a2f9ccc478301a1b11a316e8, type: 3}
       propertyPath: 'powerUpPrefabs.Array.data[3]'
       value: 
-      objectReference: {fileID: 981487110158306035, guid: 2ae1700d0e2bf144c920d944d54520d9, type: 3}
+      objectReference: {fileID: 7723194947337648236, guid: a172e2874f255854b946352a647fe220, type: 3}
     - target: {fileID: 3179940395268594482, guid: f7a4ff88a2f9ccc478301a1b11a316e8, type: 3}
       propertyPath: 'powerUpPrefabs.Array.data[4]'
       value: 
