@@ -44,6 +44,9 @@ public class CameraController : MonoBehaviour
         _powerUpShop = powerUpManager.GetComponent<PowerUpShop>();
         _inventoryManagement = powerUpManager.GetComponent<InventoryManagement>();
         _blackjackGame = blackjackManager.GetComponent<BlackjackGame>();
+        
+        EnterShop();
+        StartCoroutine(OpenShop());
     }
 
     void Update()
@@ -57,7 +60,7 @@ public class CameraController : MonoBehaviour
         transform.eulerAngles = angles;
 
         //move camera
-        if (!lookingAtItemBox && !lookingAtShop && Input.GetKeyDown(KeyCode.D))
+        if (!lookingAtItemBox && !lookingAtShop && Input.GetKeyDown(KeyCode.D) && _blackjackGame.isRoundActive)
         {
             EnterItemBox();
         }
