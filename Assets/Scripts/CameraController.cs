@@ -38,7 +38,7 @@ public class CameraController : MonoBehaviour
         transform.localPosition = defaultPos;
         transform.localEulerAngles = defaultRot;
         sensitivity = defaultSensitivity;
-        CursorLock(true);
+        CursorLock(false);
         _powerUpShop = powerUpManager.GetComponent<PowerUpShop>();
         _inventoryManagement = powerUpManager.GetComponent<InventoryManagement>();
     }
@@ -121,7 +121,7 @@ public class CameraController : MonoBehaviour
         targetPos = defaultPos;
         targetRot = Quaternion.Euler(defaultRot);
         sensitivity = defaultSensitivity;
-        CursorLock(true);
+        CursorLock(false);
         isMoving = true;
     }
 
