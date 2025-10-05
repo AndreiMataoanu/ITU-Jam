@@ -20,6 +20,8 @@ public class CameraController : MonoBehaviour
 
     private bool lookingAtItemBox = false;
     private bool lookingAtShop = false;
+    private bool canBuyItem = false;
+    private bool canUseItem = false;
 
     private Vector3 targetPos;
     private Quaternion targetRot;
@@ -69,7 +71,6 @@ public class CameraController : MonoBehaviour
         }
         else if (lookingAtShop && Input.GetKeyDown(KeyCode.D))
         {
-            _inventoryManagement.inInventory = false;
             EnterDefault();
             StartCoroutine(CloseShop());
         }
@@ -106,6 +107,8 @@ public class CameraController : MonoBehaviour
     
     public void EnterShop()
     {
+        _inventoryManagement.inInventory = false;
+        
         lookingAtShop = true;
         targetPos = shopPos;
         targetRot = Quaternion.Euler(shopRot);
