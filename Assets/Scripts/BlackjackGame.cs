@@ -14,6 +14,8 @@ public class BlackjackGame : MonoBehaviour
         public GameObject cardPrefab;
     }
 
+    [SerializeField] private GameObject powerUpManager;
+
     public struct Card
     {
         public enum Rank { None = 0, Ace, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten, Jack, Queen, King }
@@ -171,7 +173,7 @@ public class BlackjackGame : MonoBehaviour
     private const int betStep = 100;
     private const int minBet = 100;
 
-    private bool isRoundActive = false;
+    public bool isRoundActive = false;
 
     private Coroutine currentBustCoroutine = null;
 
@@ -206,11 +208,12 @@ public class BlackjackGame : MonoBehaviour
     private const float cardAnimationDuration = 0.25f;
 
     private readonly Vector3 cardScaleVector = Vector3.one * 0.05f;
-
+    private PowerUpShop powerUpShop;
+    
     private void Start()
     {
         gameDeck = new Deck();
-
+        powerUpShop = powerUpManager.GetComponent<PowerUpShop>();    
         InitializeCardLookup();
 
         StartGame();
@@ -296,7 +299,7 @@ public class BlackjackGame : MonoBehaviour
     }
 
     //Helper function to update all betting related text and button states
-    private void UpdateBettingUI()
+    public void UpdateBettingUI()
     {
         moneyText.text = $"Money: ${PlayerMoney}";
         betText.text = $"Current Bet: ${currentBet}";
@@ -518,7 +521,8 @@ public class BlackjackGame : MonoBehaviour
     public IEnumerator DealRoundCoroutine()
     {
         if(isRoundActive || currentBet < minBet || PlayerMoney < currentBet) yield break;
-
+        
+        powerUpShop.DestroyPowerUps();
         isRoundActive = true;
 
         yield return StartCoroutine(DealCardToPlayerCoroutine());
@@ -930,5 +934,10 @@ public class BlackjackGame : MonoBehaviour
         if(PlayerMoney >= 10000) return;
 
         StartGame();
+    }
+    
+    public void LoseAmount(int amount)
+    {
+        playerMoney -= amount;
     }
 }
