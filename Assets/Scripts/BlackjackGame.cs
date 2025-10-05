@@ -10,6 +10,7 @@ public class BlackjackGame : MonoBehaviour
     {
         public Card.Rank rank;
         public Card.Suit suit;
+
         public GameObject cardPrefab;
     }
 
@@ -94,10 +95,22 @@ public class BlackjackGame : MonoBehaviour
             return dealtCard;
         }
 
+        //Sunglasses ability: Peek at the next card without removing it from the deck
+        public Card? PeekCard()
+        {
+            if(cards.Count == 0)
+            {
+                return null;
+            }
+
+            return cards[0];
+        }
+
         //Prayer Beads ability: Try to deal a specific card rank if available
         public Card? DealSpecificCard(Card.Rank rank)
         {
             Card? dealtCard = null;
+
             int cardIndex = -1;
 
             for(int i = 0; i < cards.Count; i++)
@@ -169,6 +182,8 @@ public class BlackjackGame : MonoBehaviour
     private int scissorsValueReduction = 0;
     private bool isPrayerBeadsAvailable = true; //use once per round
     private bool isPrayerBeadsActive = false;
+    private bool isSunglassesAvailable = true;
+    private GameObject peekedCardObject = null;
 
     public int PlayerMoney
     {
@@ -183,6 +198,7 @@ public class BlackjackGame : MonoBehaviour
 
     [SerializeField] private Transform playerCardPosition;
     [SerializeField] private Transform dealerCardPosition;
+    [SerializeField] private Transform sunglassesCardPosition;
 
     [SerializeField] private float cardSpacing = 30.0f;
     private const float zOverlap = 0.01f;
@@ -244,6 +260,11 @@ public class BlackjackGame : MonoBehaviour
             {
                 ActivatePrayerBeads();
             }
+
+            if(Input.GetKeyDown(KeyCode.Alpha4) && isSunglassesAvailable)
+            {
+                ActivateSunglasses();
+            }
         }
     }
 
@@ -260,6 +281,13 @@ public class BlackjackGame : MonoBehaviour
         activeCardObjects.Clear();
         playerHand.Clear();
         dealerHand.Clear();
+
+        if(peekedCardObject != null)
+        {
+            Destroy(peekedCardObject);
+
+            peekedCardObject = null;
+        }
     }
 
     //Helper function to update all betting related text and button states
@@ -348,6 +376,34 @@ public class BlackjackGame : MonoBehaviour
         Debug.Log("Prayer activated"); //remove later
     }
 
+    public void ActivateSunglasses()
+    {
+        if(!isRoundActive || !isSunglassesAvailable || peekedCardObject != null) return;
+
+        if(CalculateHandValue(playerHand) > 21) return;
+
+        Card? nextCard = gameDeck.PeekCard();
+
+        if(!nextCard.HasValue) return;
+
+        Card newCardData = nextCard.Value;
+
+        if(!cardPrefabLookup.TryGetValue((newCardData.rank, newCardData.suit), out GameObject cardPrefabToUse)) return;
+
+        peekedCardObject = Instantiate(cardPrefabToUse, sunglassesCardPosition);
+
+        CardDisplay cardDisplay = peekedCardObject.GetComponent<CardDisplay>();
+
+        if(cardDisplay != null)
+        {
+            cardDisplay.SetHidden(false);
+        }
+
+        activeCardObjects.Add(peekedCardObject);
+
+        isSunglassesAvailable = false;
+    }
+
     //Calculates the total value of a hand. Aces are 1 or 11.
     private int CalculateHandValue(List<CardInstance> hand)
     {
@@ -425,6 +481,7 @@ public class BlackjackGame : MonoBehaviour
         scissorsValueReduction = 0;
         isPrayerBeadsAvailable = true;
         isPrayerBeadsActive = false;
+        isSunglassesAvailable = true;
 
         //Set bet to the last valid bet
         if(currentBet > PlayerMoney)
@@ -529,9 +586,16 @@ public class BlackjackGame : MonoBehaviour
 
     private void DealCardToPlayer()
     {
-        Card newCardData;
+        if(peekedCardObject != null)
+        {
+            activeCardObjects.Remove(peekedCardObject);
 
-        bool dealtSpecificCard = false;
+            Destroy(peekedCardObject);
+
+            peekedCardObject = null;
+        }
+
+        Card newCardData;
 
         if(isPrayerBeadsActive)
         {
@@ -578,8 +642,6 @@ public class BlackjackGame : MonoBehaviour
             if(dealtCard.HasValue)
             {
                 newCardData = dealtCard.Value;
-
-                dealtSpecificCard = true;
             }
             else
             {
@@ -596,6 +658,15 @@ public class BlackjackGame : MonoBehaviour
 
     private void DealCardToDealer(bool isHidden)
     {
+        if(peekedCardObject != null)
+        {
+            activeCardObjects.Remove(peekedCardObject);
+
+            Destroy(peekedCardObject);
+
+            peekedCardObject = null;
+        }
+
         Card newCardData = gameDeck.DealCard();
 
         DealCardInstance(newCardData, dealerHand, dealerCardPosition, isHidden);
