@@ -984,6 +984,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1957268906}
     - target: {fileID: 8019914280705265050, guid: f7a4ff88a2f9ccc478301a1b11a316e8, type: 3}
+      propertyPath: audioManager
+      value: 
+      objectReference: {fileID: 786000296}
+    - target: {fileID: 8019914280705265050, guid: f7a4ff88a2f9ccc478301a1b11a316e8, type: 3}
       propertyPath: _powerUps.Array.size
       value: 0
       objectReference: {fileID: 0}
@@ -11548,6 +11552,17 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 5036363664628651963, guid: ff0774aa4f4e65644a0abe96c423cecd, type: 3}
   m_PrefabInstance: {fileID: 1642892133}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &786000296 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4375733557009657759, guid: ff0774aa4f4e65644a0abe96c423cecd, type: 3}
+  m_PrefabInstance: {fileID: 1642892133}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 786000295}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ef7980deefcf83a4dbcaafe7db313de6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AudioTriggers
 --- !u!1001 &794062924
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -44183,6 +44198,22 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 4375733557009657759, guid: ff0774aa4f4e65644a0abe96c423cecd, type: 3}
+      propertyPath: sound.Array.data[0].name
+      value: Knife(Clone)
+      objectReference: {fileID: 0}
+    - target: {fileID: 4375733557009657759, guid: ff0774aa4f4e65644a0abe96c423cecd, type: 3}
+      propertyPath: sound.Array.data[2].name
+      value: Crucifix(Clone)
+      objectReference: {fileID: 0}
+    - target: {fileID: 4375733557009657759, guid: ff0774aa4f4e65644a0abe96c423cecd, type: 3}
+      propertyPath: sound.Array.data[3].name
+      value: Scissors(Clone)
+      objectReference: {fileID: 0}
+    - target: {fileID: 4375733557009657759, guid: ff0774aa4f4e65644a0abe96c423cecd, type: 3}
+      propertyPath: sound.Array.data[4].name
+      value: Sunglasses(Clone)
+      objectReference: {fileID: 0}
     - target: {fileID: 5036363664628651963, guid: ff0774aa4f4e65644a0abe96c423cecd, type: 3}
       propertyPath: m_Name
       value: AudioManager
