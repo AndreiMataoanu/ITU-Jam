@@ -49,7 +49,8 @@ public class PowerUpShop : MonoBehaviour
         {
             int randomIndex = Random.Range(0, powerUpPrefabs.Length);
             Vector3 prefabPosition = transform.position + Vector3.up * (i * spaceOffset);
-            Instantiate(powerUpPrefabs[randomIndex], prefabPosition, Quaternion.identity, transform);
+            GameObject prefab = Instantiate(powerUpPrefabs[randomIndex], prefabPosition, Quaternion.identity, transform);
+            prefab.GetComponent<PowerUpInfo>().SetBlackjackGame(_blackjackGame);
         }
 
         _hasSpawned = true;

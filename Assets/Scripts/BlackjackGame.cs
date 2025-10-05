@@ -522,7 +522,8 @@ public class BlackjackGame : MonoBehaviour
     {
         if(isRoundActive || currentBet < minBet || PlayerMoney < currentBet) yield break;
         
-        powerUpShop.DestroyPowerUps();
+        if (powerUpShop.hasSelected)
+            powerUpShop.DestroyPowerUps();
         isRoundActive = true;
 
         yield return StartCoroutine(DealCardToPlayerCoroutine());
