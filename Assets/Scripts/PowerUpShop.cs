@@ -16,17 +16,18 @@ public class PowerUpShop : MonoBehaviour
     [SerializeField] private Color outlineColor = new Color(0.4f, 0.0f, 0.7f);
     [SerializeField] private float outlineWidth = 5.0f;
     [SerializeField] private float disappearTime = 1.0f;
+    [SerializeField] private GameObject blackjackGameManager;
 
     private Transform _highlight;
     private Transform _selection;
     private RaycastHit _raycastHit;
     [HideInInspector] public bool hasSelected;
-    private MoneyManagement _moneyManagement;
+    private BlackjackGame _blackjackGame;
     private InventoryManagement _inventoryManagement;
     
     private void Awake()
     {
-        _moneyManagement = GetComponent<MoneyManagement>();
+        _blackjackGame = blackjackGameManager.GetComponent<BlackjackGame>();
         _inventoryManagement = GetComponent<InventoryManagement>();
         
         if (powerUpPrefabs == null || powerUpPrefabs.Count() < powerUpCount)
@@ -108,6 +109,7 @@ public class PowerUpShop : MonoBehaviour
                 hasSelected = true;
 
                 BuySelectedPowerUp();
+                _blackjackGame.UpdateBettingUI();
                 // TODO: After buying, change camera direction
             }
         }
@@ -116,8 +118,8 @@ public class PowerUpShop : MonoBehaviour
     private void BuySelectedPowerUp()
     {
         var selectionInfo = _selection.gameObject.GetComponent<PowerUpInfo>();
-                
+        
         if (_inventoryManagement.AddItem(_selection.gameObject))
-            _moneyManagement.LoseAmount(selectionInfo.price);
+            _blackjackGame.LoseAmount(selectionInfo.price);
     }
 }

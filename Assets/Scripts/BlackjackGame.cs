@@ -218,7 +218,7 @@ public class BlackjackGame : MonoBehaviour
     }
 
     //Helper function to update all betting related text and button states
-    private void UpdateBettingUI()
+    public void UpdateBettingUI()
     {
         moneyText.text = $"Money: ${PlayerMoney}";
         betText.text = $"Current Bet: ${currentBet}";
@@ -344,7 +344,7 @@ public class BlackjackGame : MonoBehaviour
         UpdateBettingUI();
 
         statusText.text = PlayerMoney > 0
-            ? $"Place your bet (Minimum ${minBet}). You have ${PlayerMoney}."
+            ? $"Place your bet (Minimum ${minBet})."
             : "GAME OVER. You ran out of money.";
 
         hitButton.SetActive(false);
@@ -633,5 +633,10 @@ public class BlackjackGame : MonoBehaviour
         statusText.text = $"{followUpMessage} Place your next bet and press DEAL.";
 
         StartGame();
+    }
+    
+    public void LoseAmount(int amount)
+    {
+        playerMoney -= amount;
     }
 }
